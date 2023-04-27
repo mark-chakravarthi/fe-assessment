@@ -1,0 +1,52 @@
+{
+  "roles": [
+    {
+      "roleName": "ABXGSD KK",
+      "orgName": "BABUMUSI",
+      "createdDate": "26/11/2009",
+      "roleState": true,
+      "roleId": "ABC123",
+      "id": 1
+    },
+    {
+      "id": 2,
+      "roleName": "Admin KK",
+      "orgName": "BABA kA Thela",
+      "createdDate": "26/11/2011",
+      "roleState": true,
+      "roleId": "XXX324"
+    },
+    {
+      "roleName": "YUYU KK",
+      "orgName": "BABUMUSI",
+      "createdDate": "26/11/2009",
+      "roleState": true,
+      "roleId": "ABC123",
+      "id": 3
+    },
+    {
+      "roleName": "Admin2",
+      "orgName": "CM",
+      "createdDate": "10/02/2000",
+      "roleState": true,
+      "roleId": "4554545",
+      "id": 4
+    },
+    {
+      "roleName": "12",
+      "orgName": "qwq",
+      "createdDate": "10/02/2000",
+      "roleState": false,
+      "roleId": "qww",
+      "id": 5
+    },
+    {
+      "roleName": "Bahu safai wala",
+      "orgName": "jb dslsd",
+      "createdDate": "10/20/2008",
+      "roleState": true,
+      "roleId": "21212",
+      "id": 6
+    }
+  ]
+}
