@@ -4,6 +4,8 @@ import filter from "../images/filter.png";
 import DisplayTable from "./DisplayTable";
 import { useState } from "react";
 import DisplayPagination from "./DisplayPagination";
+import DialogModal from "./DialogModal";
+import Forms from "./Forms";
 // import { ThemeProvider, createTheme } from '@mui/system';
 
 // const theme = createTheme({
@@ -30,6 +32,7 @@ const Wholesaler = () => {
     { fname: "Frozen yoghurt", lname: 159, email: 6.0, pno: 24, wid: 3 },
     { fname: "Frozen yoghurt", lname: 159, email: 6.0, pno: 24, wid: 4 },
   ]);
+  const [openModal,setOpenModal]=useState(false);
   return (
     <>
       <Grid container sx={{ margin: 5 }}>
@@ -54,6 +57,7 @@ const Wholesaler = () => {
                 variant="contained"
                 color="primary"
                 sx={{ width: 82, height: 36 }}
+                onClick={()=>setOpenModal(true)}
               >
                 Add
               </Button>
@@ -76,6 +80,7 @@ const Wholesaler = () => {
           <DisplayTable items={items} setItems={setItems} />
         </Grid>
        <DisplayPagination/>
+       <DialogModal open={openModal} children={<Forms/>} />
       </Grid>
     </>
   );
