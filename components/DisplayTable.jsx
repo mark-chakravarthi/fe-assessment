@@ -11,24 +11,34 @@ import deleteicon from "../images/deleteicon.png";
 import editicon from "../images/editicon.png";
 import { useState } from "react";
 import { Button } from "@mui/material";
-
+import DialogModal from "./DialogModal";
+import EditForm from "./EditForm";
+import DeleteForm from "./DeleteForm";
 
 const DisplayTable = (props) => {
-  let items = props.items;
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
-  function handleDelete(wid){
-    let newItems=props.items.filter(item => {
-      if(wid!==item.wid){
+  let items = props.items;
+  function handleCloseEditModal() {
+    setOpenEditModal(false);
+  }
+  function handleCloseDeleteModal() {
+    setOpenDeleteModal(false);
+  }
+  function handleDelete(wid) {
+    let newItems = props.items.filter((item) => {
+      if (wid !== item.wid) {
         return {
-          ...item
-        }
+          ...item,
+        };
       }
-    })
-    props.setItems(newItems)
+    });
+    props.setItems(newItems);
   }
   return (
     <>
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} sx={{ width: "120%" }}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
@@ -54,10 +64,15 @@ const DisplayTable = (props) => {
                 <TableCell align="left">{row.pno}</TableCell>
                 <TableCell align="left">{row.wid}</TableCell>
                 <TableCell align="left">
-                  <Button>
+                  <Button onClick={() => setOpenEditModal(true)}>
                     <Image src={editicon} />
                   </Button>
-                  <Button onClick={()=>handleDelete(row.wid)}>
+                  <Button
+                    onClick={() => {
+                      setOpenDeleteModal(true);
+                      handleDelete(row.wid);
+                    }}
+                  >
                     <Image src={deleteicon} />
                   </Button>
                 </TableCell>
@@ -66,6 +81,17 @@ const DisplayTable = (props) => {
           </TableBody>
         </Table>
       </TableContainer>
+      <DialogModal
+        open={openEditModal}
+        children={<EditForm />}
+        handleClose={handleCloseEditModal}
+      />
+      <DialogModal
+        open={openDeleteModal}
+        children={<DeleteForm />}
+        handleClose={handleCloseDeleteModal}
+        maxWidth='xs'
+      />
     </>
   );
 };

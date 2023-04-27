@@ -5,7 +5,10 @@ import DisplayTable from "./DisplayTable";
 import { useState } from "react";
 import DisplayPagination from "./DisplayPagination";
 import DialogModal from "./DialogModal";
-import Forms from "./Forms";
+import AddForm from "./AddForm";
+import FilterForm from "./FilterForm";
+// import Mymodal from "./Mymodal";
+
 // import { ThemeProvider, createTheme } from '@mui/system';
 
 // const theme = createTheme({
@@ -32,10 +35,18 @@ const Wholesaler = () => {
     { fname: "Frozen yoghurt", lname: 159, email: 6.0, pno: 24, wid: 3 },
     { fname: "Frozen yoghurt", lname: 159, email: 6.0, pno: 24, wid: 4 },
   ]);
-  const [openModal,setOpenModal]=useState(false);
+  const [openAddModal, setOpenAddModal] = useState(false);
+  const [openFilterModal, setOpenFilterModal] = useState(false);
+  function handleCloseAddModal() {
+    setOpenAddModal(false);
+  }
+  function handleCloseFilterModal() {
+    setOpenFilterModal(false);
+  }
+
   return (
     <>
-      <Grid container sx={{ margin: 5 }}>
+      <Grid container sx={{ margin: 5 }} rowSpacing={4}>
         <Grid item xs={8}>
           <Typography
             variant="subtitle1"
@@ -50,6 +61,7 @@ const Wholesaler = () => {
             Wholesalers
           </Typography>
         </Grid>
+
         <Grid item xs={4}>
           <Grid container>
             <Grid item xs={4}>
@@ -57,7 +69,7 @@ const Wholesaler = () => {
                 variant="contained"
                 color="primary"
                 sx={{ width: 82, height: 36 }}
-                onClick={()=>setOpenModal(true)}
+                onClick={() => setOpenAddModal(true)}
               >
                 Add
               </Button>
@@ -67,6 +79,7 @@ const Wholesaler = () => {
                 variant="contained"
                 color="primary"
                 sx={{ width: 82, height: 36, fontweight: 400, fontsize: 15 }}
+                onClick={() => setOpenFilterModal(true)}
               >
                 <Image src={filter} width="18px" height="15.3px" />
                 {/* &nbsp; */}
@@ -75,12 +88,21 @@ const Wholesaler = () => {
             </Grid>
           </Grid>
         </Grid>
-        <Divider sx={{ color: "grey" }} />
+        <Divider/>
         <Grid item>
           <DisplayTable items={items} setItems={setItems} />
         </Grid>
-       <DisplayPagination/>
-       <DialogModal open={openModal} children={<Forms/>} />
+        <DisplayPagination />
+        <DialogModal
+          open={openAddModal}
+          children={<AddForm />}
+          handleClose={handleCloseAddModal}
+        />
+        <DialogModal
+          open={openFilterModal}
+          children={<FilterForm />}
+          handleClose={handleCloseFilterModal}
+        />
       </Grid>
     </>
   );
