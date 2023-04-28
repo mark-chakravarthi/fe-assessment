@@ -1,64 +1,55 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
-import CssBaseline from '@mui/material/CssBaseline';
-import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import {
+  Box,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemButton,
+  ListItemText,
+} from "@mui/material";
+import Image from "next/image";
+import rectangle from "../images/rectangle.png";
+import union from "../images/union.png";
 
-const drawerWidth = 240;
-
-export default function Sidebar({selectedDomain,setSelectedDomain}) {
-
-  const handleClick=(domain)=>{
-    console.log("clicked")
-    setSelectedDomain(domain)
-  }
-
-  const selectedDomainStyle={
-    color:"#ffffff",
-    backgroundColor:"#4D47C3",
-    '&:hover':{backgroundColor:"#4D47C3"}
-  }
-
-  const otherDomainStyle={
-    color:"#151515",
-    backgroundColor:"#fffffff"
-  }
-
+const Sidebar = () => {
   return (
-    <Box sx={{ display: 'flex' }}>
-      <CssBaseline />
-      <Drawer
-        variant="permanent"
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
+    <>
+      <div
+        style={{
+          border: "3px solid rgba(77, 71, 195, 0.08)",
+          width: 282,
+          height: 570,
         }}
       >
-        <Toolbar />
-        <Box sx={{ overflow: 'auto',marginTop:"30px" }}>
+        <Box sx={{ width: 282 }} role="presentation">
           <List>
-            {['Users', 'Roles', 'Companies', 'Wholesalers'].map((text, index) => (
-              <ListItem key={text} disablePadding onClick={()=>handleClick(text)}>
-                <ListItemButton sx={selectedDomain==text?selectedDomainStyle:otherDomainStyle} >
-                  {/* <ListItemIcon>
-                  <CheckBoxOutlineBlankIcon/>
-                  </ListItemIcon> */}
-                  <ListItemText primary={text} />
-                  <ArrowForwardIosIcon/>
-                </ListItemButton>
-              </ListItem>
-            ))}
+            {["Users", "Roles", "Companies", "Wholesalers"].map(
+              (text, index) => (
+                <ListItem key={text} disablePadding>
+                  <ListItemButton>
+                    <ListItemIcon>
+                      <Image
+                        src={rectangle}
+                        alt="bluebox"
+                        width="18px"
+                        height="18px"
+                      />
+                    </ListItemIcon>
+                    <ListItemText primary={text} />
+                    <Image
+                        src={union}
+                        alt="union"
+                        width="13px"
+                        height="7.11px"
+                      />
+                  </ListItemButton>
+                </ListItem>
+              )
+            )}
           </List>
         </Box>
-      </Drawer>
-    </Box>
+      </div>
+    </>
   );
-}
+};
+
+export default Sidebar;

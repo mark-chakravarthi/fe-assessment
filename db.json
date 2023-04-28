@@ -1,52 +1,36 @@
 {
   "roles": [
     {
-      "roleName": "ABXGSD KK",
-      "orgName": "BABUMUSI",
+      "roleName": "john",
+      "orgName": "dell",
       "createdDate": "26/11/2009",
       "roleState": true,
-      "roleId": "ABC123",
+      "roleId": "MNR678",
       "id": 1
     },
     {
       "id": 2,
-      "roleName": "Admin KK",
-      "orgName": "BABA kA Thela",
+      "roleName": "yang",
+      "orgName": "dell",
       "createdDate": "26/11/2011",
       "roleState": true,
-      "roleId": "XXX324"
+      "roleId": "XYZ324"
     },
     {
-      "roleName": "YUYU KK",
-      "orgName": "BABUMUSI",
-      "createdDate": "26/11/2009",
+      "roleName": "sam",
+      "orgName": "dell",
+      "createdDate": "26/11/2020",
       "roleState": true,
-      "roleId": "ABC123",
+      "roleId": "ABC126",
       "id": 3
     },
     {
-      "roleName": "Admin2",
-      "orgName": "CM",
-      "createdDate": "10/02/2000",
+      "roleName": "peter",
+      "orgName": "dell",
+      "createdDate": "03/07/2001",
       "roleState": true,
-      "roleId": "4554545",
+      "roleId": "PQR456",
       "id": 4
-    },
-    {
-      "roleName": "12",
-      "orgName": "qwq",
-      "createdDate": "10/02/2000",
-      "roleState": false,
-      "roleId": "qww",
-      "id": 5
-    },
-    {
-      "roleName": "Bahu safai wala",
-      "orgName": "jb dslsd",
-      "createdDate": "10/20/2008",
-      "roleState": true,
-      "roleId": "21212",
-      "id": 6
     }
   ]
 }

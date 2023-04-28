@@ -1,20 +1,22 @@
 import { useState } from 'react';
 import { TextField, Button, Grid } from '@mui/material';
-import { DatePicker, LocalizationProvider } from '@mui/lab';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { useEffect } from 'react';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
 
-const 
-
-RoleForm = (props) => {
+const RoleForm = (props) => {
   const [roleName, setRoleName] = useState('');
   const [organizationName, setOrganizationName] = useState('');
   const [roleId, setRoleId] = useState('');
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState();
   const [roleState, setRoleState] = useState('');
   const [isUpdateState, setIsUpdateState] = useState(false);
   const [isUpdateId, setIsUpdateId] = useState('');
+  const [isvalidId, setisvalidId] = useState(true);
 
   async function postData(){
     const res = await fetch(`${process.env.BASE_URL}/roles`, {
@@ -30,9 +32,9 @@ RoleForm = (props) => {
         "roleId": roleId
         })
       });
-  
-      if (res.ok) {
-        alert('Message sent!');
+
+      if (res.ok && isvalidId) {
+        alert('Added successfully!');
         setRoleName('');
         setOrganizationName('');
         setSelectedDate('');
@@ -45,8 +47,8 @@ RoleForm = (props) => {
       }
   }
 
-   async function putItemData(id){
-    const res = await fetch(`${process.env.BASE_URL}/roles/${id}`, {
+   async function putItemData(roleId){
+    const res = await fetch(`${process.env.BASE_URL}/roles/${roleId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -57,11 +59,12 @@ RoleForm = (props) => {
             "createdDate": selectedDate,
             "roleState":roleState,
             "roleId": roleId,
-            "id": isUpdateId
+            // "id": isUpdateId
             })
       })
-      if (res.ok) {
-        alert('Data Updated!');
+
+      if (res.ok && isvalidId) {
+        alert('Data Updated successfully!');
         setRoleName('');
         setOrganizationName('');
         setSelectedDate('');
@@ -73,7 +76,6 @@ RoleForm = (props) => {
       } else {
         alert('Something went wrong. Please try again later.');
       }
-    
   }
 
   function getItemData(id){
@@ -82,11 +84,20 @@ RoleForm = (props) => {
         .then((data) => {
         setRoleName(data.roleName);
         setOrganizationName(data.orgName);
+
+        // const dateObj = new Date(data.createdDate);
+        // const weekday = dateObj.toLocaleString('default', { weekday: 'long' });
+        // const month = dateObj.toLocaleString('default', { month: 'long' });
+        // const day = dateObj.getDate();
+        // const year = dateObj.getFullYear();
+        // const longDate = `${weekday} ${month} ${day} ${year}`;
+
         setSelectedDate(data.createdDate);
+        
         setRoleState(data.roleState);
         setRoleId(data.roleId);
-        setIsUpdateState(true)
-        setIsUpdateId(data.id)
+        setIsUpdateState(true);
+        setIsUpdateId(data.roleId);
         });
   }
 
@@ -97,14 +108,32 @@ RoleForm = (props) => {
     }
     
   }, []);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // Handle form submission here
+
     if(!isUpdateState)
         postData();
     else
         putItemData(isUpdateId)
     };
+
+    const handleroleId = (e) => {
+        setRoleId(e.target.value)
+        const reg = new RegExp("^[A-Z]{3}[0-9]{3}$");
+        //test whether input is valid
+        setisvalidId(reg.test(e.target.value));
+    }
+
+    // const dateHandler = (date) => {
+    //   const dateObj = new Date(date);
+    //   const year = dateObj.getFullYear();
+    //   const month = ('0' + (dateObj.getMonth() + 1)).slice(-2);
+    //   const day = ('0' + dateObj.getDate()).slice(-2);
+    //   const isoDate = `${year}-${month}-${day}`;
+    //   console.log(isoDate);
+    //   setSelectedDate(isoDate);
+    //}
 
   return (
     <div style={{'display': 'flex'}}>
@@ -128,12 +157,13 @@ RoleForm = (props) => {
         value={organizationName}
         onChange={e=>{
             setOrganizationName(e.target.value)
+           
         }}
         fullWidth
         required
       />
 
-<TextField
+      {/* <TextField
         label="Created Date"
         variant="outlined"
         margin="normal"
@@ -143,7 +173,31 @@ RoleForm = (props) => {
         }}
         fullWidth
         required
+      /> */}
+
+      <TextField
+        label="Created Date"
+        variant="outlined"
+        margin="normal"
+        value={selectedDate}
+        onChange={e=>{
+          setSelectedDate(e.target.value)
+        }}
+        fullWidth
+        required
       />
+
+      {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <DatePicker onChange={(date) => setSelectedDate(new Date(date))}
+          // onChange={dateHandler}
+          // disablePast={true}
+          // defaultValue={new Date('2022-01-01')}
+          value={selectedDate}
+          // renderInput={(params) => <TextField {...params} />}
+          format="DD/MM/YYYY"
+        />
+      </LocalizationProvider> */}
+
       {/* <DatePicker
         label="Select Date"
         value={selectedDate}
@@ -151,7 +205,7 @@ RoleForm = (props) => {
         renderInput={(params) => <TextField {...params} />}
       /> */}
 
-<Select
+    <Select
       value={roleState}
       onChange={e=>{
         setRoleState(e.target.value)
@@ -165,20 +219,19 @@ RoleForm = (props) => {
       <MenuItem value= {false}>inactive</MenuItem>
     </Select>
 
-<TextField
+      <TextField
         label="Role Id"
         variant="outlined"
         margin="normal"
         value={roleId}
-        onChange={e=>{
-            setRoleId(e.target.value)
-        }}
+        onChange={handleroleId}
+        error={!isvalidId}
         fullWidth
         required
       />    
-      <Button type="submit" variant="contained" color="primary">
+      <Button type="submit" sx={{color:"#fff",backgroundColor: "#4D47C3"}}>
         {
-            isUpdateState && "Update Data" ||  "Add Role"
+            isUpdateState && "Update" ||  "ADD"
         }
       </Button>
     </form></div>
