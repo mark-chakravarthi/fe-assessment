@@ -9,17 +9,58 @@ import Paper from "@mui/material/Paper";
 import Image from "next/image";
 import deleteicon from "../images/deleteicon.png";
 import editicon from "../images/editicon.png";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import DialogModal from "./DialogModal";
 import EditForm from "./EditForm";
 import DeleteForm from "./DeleteForm";
+import { AxiosInstance } from "@/axios/ConfigAxios";
 
 const DisplayTable = (props) => {
+  // const [wholesalerDetails, setWholesalerDetails] = useState([]);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [dId, setDId] = useState(undefined);
+  const [wholesalerDetailForEdit, setWholesalerDetailForEdit] = useState(
+    undefined
+  );
+  const wholesalerDetails = props.wholesalerDetails;
+  const setWholesalerDetails = props.setWholesalerDetails;
 
-  let items = props.items;
+  async function getWholesalerDetails(page) {
+    AxiosInstance.get(`WholeSellers?pageNo=${page - 1}&pageSize=5`)
+      .then((response) => {
+        // Handle response
+        console.log(response.data.content);
+        setWholesalerDetails(response.data.content);
+      })
+      .catch((err) => {
+        // Handle errors
+        console.error(err);
+      });
+  }
+
+  useEffect(() => {
+    getWholesalerDetails(props.page);
+  }, [props.page]);
+
+  useEffect(() => {
+    if (dId !== undefined && openDeleteModal === false) {
+      setOpenDeleteModal(true);
+    } else {
+      setOpenDeleteModal(false);
+    }
+  }, [dId]);
+
+  useEffect(() => {
+    if (wholesalerDetailForEdit !== undefined && openEditModal === false) {
+      setOpenEditModal(true);
+    } else {
+      setOpenEditModal(false);
+    }
+  }, [wholesalerDetailForEdit]);
+  console.log(wholesalerDetails);
+
   function handleCloseEditModal() {
     setOpenEditModal(false);
   }
@@ -27,14 +68,21 @@ const DisplayTable = (props) => {
     setOpenDeleteModal(false);
   }
   function handleDelete(wid) {
-    let newItems = props.items.filter((item) => {
-      if (wid !== item.wid) {
-        return {
-          ...item,
-        };
-      }
-    });
-    props.setItems(newItems);
+    setDId(wid);
+    // console.log("in handle delte", dId);
+  }
+  function handleEdit(fname, lname, email, pno, wId, role, locId) {
+    const existingDetails = {
+      fname: fname,
+      lname: lname,
+      email: email,
+      pno: pno,
+      wId: wId,
+      role: role,
+      locId: locId,
+    };
+    console.log("edetails", existingDetails);
+    setWholesalerDetailForEdit(existingDetails);
   }
   return (
     <>
@@ -47,50 +95,70 @@ const DisplayTable = (props) => {
               <TableCell align="left">Email ID</TableCell>
               <TableCell align="left">Phone Number</TableCell>
               <TableCell align="left">Wholesaler ID</TableCell>
-              <TableCell align="left">Actions</TableCell>
+              <TableCell align="center">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {items.map((row) => (
-              <TableRow
-                key={row.wid}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {row.fname}
-                </TableCell>
-                <TableCell align="left">{row.lname}</TableCell>
-                <TableCell align="left">{row.email}</TableCell>
-                <TableCell align="left">{row.pno}</TableCell>
-                <TableCell align="left">{row.wid}</TableCell>
-                <TableCell align="left">
-                  <Button onClick={() => setOpenEditModal(true)}>
-                    <Image src={editicon} />
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      setOpenDeleteModal(true);
-                      handleDelete(row.wid);
-                    }}
+            {Array.isArray(wholesalerDetails)
+              ? wholesalerDetails.map((row) => (
+                  <TableRow
+                    key={row.wid}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
-                    <Image src={deleteicon} />
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
+                    <TableCell component="th" scope="row">
+                      {row.firstName}
+                    </TableCell>
+                    <TableCell align="left">{row.lastName}</TableCell>
+                    <TableCell align="left">{row.emailId}</TableCell>
+                    <TableCell align="left">{row.phoneNo}</TableCell>
+                    <TableCell align="left">{row.wholeSalerId}</TableCell>
+                    <TableCell align="center">
+                      <Button
+                        onClick={() =>
+                          handleEdit(
+                            row.firstName,
+                            row.lastName,
+                            row.emailId,
+                            row.phoneNo,
+                            row.wholeSalerId,
+                            row.role,
+                            row.locId
+                          )
+                        }
+                      >
+                        <Image src={editicon} />
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          handleDelete(row.wholeSalerId);
+                        }}
+                      >
+                        <Image src={deleteicon} />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              : null}
           </TableBody>
         </Table>
       </TableContainer>
       <DialogModal
         open={openEditModal}
-        children={<EditForm />}
+        children={
+          <EditForm
+            wDetail={wholesalerDetailForEdit}
+            wholesalerDetails={wholesalerDetails}
+            setWholesalerDetails={setWholesalerDetails}
+          />
+        }
         handleClose={handleCloseEditModal}
       />
+
       <DialogModal
         open={openDeleteModal}
-        children={<DeleteForm />}
+        children={<DeleteForm wid={dId} />}
         handleClose={handleCloseDeleteModal}
-        maxWidth='xs'
+        maxWidth="xs"
       />
     </>
   );

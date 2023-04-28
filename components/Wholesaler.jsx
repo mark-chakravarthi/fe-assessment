@@ -7,36 +7,14 @@ import DisplayPagination from "./DisplayPagination";
 import DialogModal from "./DialogModal";
 import AddForm from "./AddForm";
 import FilterForm from "./FilterForm";
-// import Mymodal from "./Mymodal";
 
-// import { ThemeProvider, createTheme } from '@mui/system';
-
-// const theme = createTheme({
-//     palette: {
-//       background: {
-//         paper: '#fff',
-//       },
-//       text: {
-//         primary: '#173A5E',
-//         secondary: '#46505A',
-//       },
-//       action: {
-//         active: '#001E3C',
-//       },
-//       success: {
-//         dark: '#009688',
-//       },
-//     },
-//   });
 const Wholesaler = () => {
-  const [items, setItems] = useState([
-    { fname: "Frozen yoghurt", lname: 159, email: 6.0, pno: 24, wid: 1 },
-    { fname: "Frozen yoghurt", lname: 159, email: 6.0, pno: 24, wid: 2 },
-    { fname: "Frozen yoghurt", lname: 159, email: 6.0, pno: 24, wid: 3 },
-    { fname: "Frozen yoghurt", lname: 159, email: 6.0, pno: 24, wid: 4 },
-  ]);
   const [openAddModal, setOpenAddModal] = useState(false);
   const [openFilterModal, setOpenFilterModal] = useState(false);
+  const [page, setPage] = useState(1);
+  const [wholesalerDetails, setWholesalerDetails] = useState([]);
+  const [IsLastPage, setIsLastPage] = useState(false);
+
   function handleCloseAddModal() {
     setOpenAddModal(false);
   }
@@ -82,17 +60,25 @@ const Wholesaler = () => {
                 onClick={() => setOpenFilterModal(true)}
               >
                 <Image src={filter} width="18px" height="15.3px" />
-                {/* &nbsp; */}
                 Filters
               </Button>
             </Grid>
           </Grid>
         </Grid>
-        <Divider/>
+        <Divider />
         <Grid item>
-          <DisplayTable items={items} setItems={setItems} />
+          <DisplayTable
+            page={page}
+            wholesalerDetails={wholesalerDetails}
+            setWholesalerDetails={setWholesalerDetails}
+          />
         </Grid>
-        <DisplayPagination />
+        <DisplayPagination
+          page={page}
+          setPage={setPage}
+          isLastPage={IsLastPage}
+          setIsLastPage={setIsLastPage}
+        />
         <DialogModal
           open={openAddModal}
           children={<AddForm />}
@@ -100,7 +86,14 @@ const Wholesaler = () => {
         />
         <DialogModal
           open={openFilterModal}
-          children={<FilterForm />}
+          children={
+            <FilterForm
+              wholesalerDetails={wholesalerDetails}
+              setWholesalerDetails={setWholesalerDetails}
+              isLastPage={IsLastPage}
+              setIsLastPage={setIsLastPage}
+            />
+          }
           handleClose={handleCloseFilterModal}
         />
       </Grid>

@@ -1,23 +1,29 @@
 import { Typography, Grid, Pagination } from "@mui/material";
-import { useState } from "react";
 
-const DisplayPagination = () => {
-  const [page, setPage] = useState(1);
+const DisplayPagination = (props) => {
   function handleChange(e, value) {
-    setPage(value);
+    props.setPage(value);
   }
+  console.log(props.IsLastPage,"lastpage");
   return (
     <>
       <Grid container style={{bottom:0}}>
         <Grid item xs={3}>
-          <Typography>Page: {page}</Typography>
+          <Typography>Page: {props.page}</Typography>
         </Grid>
         <Grid item xs={9}>
           <Pagination
             count={10}
-            page={page}
+            page={props.page}
             color="primary"
             onChange={handleChange}
+            nextIconButtonProps={
+              !props.IsLastPage
+                ? {
+                    disabled: !props.IsLastPage
+                  }
+                : undefined
+            }
           />
         </Grid>
       </Grid>
