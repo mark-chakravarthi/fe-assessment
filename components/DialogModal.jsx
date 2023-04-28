@@ -7,7 +7,7 @@ import Card from '@mui/material/Card';
 const DialogModal = (props) => {
   return (
     <>
-    <Dialog  open={props.open} onClose={props.handleClose}>
+    <Dialog open={props.open} onClose={props.handleClose}>
       <Card sx={{ minWidth: 275 }}>
         <CardContent>
           <RoleForm handleClose={props.handleClose} itemId = {props.itemId}/>

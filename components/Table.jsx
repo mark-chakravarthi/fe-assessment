@@ -13,44 +13,57 @@ import deletebtn from "../images/deletebtn.png";
 
 export default function TableData(props) {
 
+  const data=props.data;
+  const setData=props.setData;
+
   const [open, setOpen] = useState(false);
 
-  const [updateItemId, setUpdateItemId] = useState('')
-  const [data, setData] = useState([]);
-
-  const handleOpen = (e) => {
-      setOpen(true);
+  const handleOpen = () => {
+    setOpen(true);
   };
+
   const handleClose = () => {
       setOpen(false);
   };
+
+  // const [filterOpen, setFilterOpen] = useState(false);
+
+  //   function handleFilterClose() {
+  //       setFilterOpen(false);
+  //   }
+
+  const [updateItemId, setUpdateItemId] = useState('');
 
   useEffect(() => {
     getData(props.page);
   }, [props.page]);
 
   function getData(page){
-    fetch(`${process.env.BASE_URL}/roles/paging?pageSize=4&pageNo=${page-1}`)
+    fetch(`${process.env.BASE_URL}/roles/paging?pageSize=2&pageNo=${page-1}`)
         .then((res) => res.json())
         .then((data) => setData(data.content));
   }
 
   async function deleteData(id) {
     console.log(id)
-     await fetch(`${process.env.BASE_URL}/roles/id/${id}`, {
+     await fetch(`${process.env.BASE_URL}/roles/${id}`, {
       method: 'DELETE'
     })
     .then(()=>alert("Deleted"));
-  
-    getData();
+    getData(props.page);
   }
 
   return (
     <>
-       {
+        {
         open && 
         <DialogModal open={open} handleClose={handleClose} itemId = {updateItemId} setUpdateItemId = {setUpdateItemId} />
         }
+
+        {/* {
+        filterOpen && 
+        <FilterModal open={filterOpen} handleFilterClose={handleFilterClose} />
+        } */}
 
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
