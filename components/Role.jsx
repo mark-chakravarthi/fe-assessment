@@ -9,12 +9,19 @@ import FilterModal from './FilterModal';
 
 export default function Role() {
 
+    // table data
     const [data, setData] = useState([]);
+
+    // page state for pagination
     const [page, setPage] = React.useState(1);
 
+    // add modal open
     const [open, setOpen] = useState(false);
 
+    // filter modal open 
     const [filterOpen, setFilterOpen] = useState(false);
+
+    // handle open and close of add modal
 
     const handleOpen = () => {
         setOpen(true);
@@ -22,6 +29,8 @@ export default function Role() {
     const handleClose = () => {
         setOpen(false);
     };
+
+    // handle open and close of filter modal
 
     function handleFilterOpen() {
         setFilterOpen(true);
@@ -31,17 +40,22 @@ export default function Role() {
         setFilterOpen(false);
     }
 
-    console.log(filterOpen);
-
     return (
     <>
+
+        {/* open modal to add */}
+
         {
             open && 
             <DialogModal open={open} handleClose={handleClose} itemId = ''/>
         }
  
-        {filterOpen && <FilterModal open={filterOpen} handleFilterClose={handleFilterClose} data={data}
-            setData={setData}/>} 
+        {/* Filter modal open */}
+
+        {   
+            filterOpen && 
+            <FilterModal open={filterOpen} handleFilterClose={handleFilterClose} data={data} setData={setData}/>
+        } 
         
         
         <Grid container spacing={1} sx={{marginBottom:"90px"}}>
@@ -58,6 +72,8 @@ export default function Role() {
 
         <hr style={{position:"absolute", width: "1100px",height: "0px",left: "318px",top: "160px",border: "1px solid #CACACA"}}/>
 
+        {/* Table component */}
+
         <TableData 
             handleOpen = {handleOpen} 
             handleClose = {handleClose} 
@@ -66,7 +82,12 @@ export default function Role() {
             setData={setData}
         />
 
-        <PaginationControl page={page} setPage={setPage}/>
+        {/* Pagination component */}
+
+        <PaginationControl 
+            page={page} 
+            setPage={setPage}
+        />
   
     </>
     

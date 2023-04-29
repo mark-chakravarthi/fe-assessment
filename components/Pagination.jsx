@@ -4,7 +4,8 @@ import Pagination from '@mui/material/Pagination';
 import { Grid } from "@mui/material";
 
 export default function PaginationControl(props) {
-  // const [page, setPage] = React.useState(1);
+ 
+  // handle page number
   const handleChange = (event,value) => {
     props.setPage(value);
   };

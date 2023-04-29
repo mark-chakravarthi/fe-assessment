@@ -1,17 +1,12 @@
-import {
-  Box,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemButton,
-  ListItemText,
-} from "@mui/material";
+import {Box , List , ListItem , ListItemIcon , ListItemButton , ListItemText } from "@mui/material";
 import Image from "next/image";
 import rectangle from "../images/rectangle.png";
 import union from "../images/union.png";
 
 const Sidebar = () => {
+
   return (
+    
     <>
       <div
         style={{

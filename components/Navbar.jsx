@@ -10,10 +10,10 @@ const Navbar = () => {
     <>
       <Box sx={{ flexGrow: 1, padding: 0 }}>
         <AppBar position="static" elevation={0} sx={{ bgcolor: "#F1F0FA" }}>
-          {/* elevation to remove navbar shadow */}
           <Toolbar>
             <Image src={Logo} alt="logo" width="40px" height="42px" />
             &nbsp; &nbsp;
+            
             <Typography
               variant="h6"
               component="div"
@@ -30,6 +30,7 @@ const Navbar = () => {
             >
               Squadra
             </Typography>
+
           </Toolbar>
         </AppBar>
       </Box>

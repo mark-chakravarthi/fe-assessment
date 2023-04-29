@@ -4,19 +4,18 @@ import FilterForm from '../components/FilterForm'
 import CardContent from '@mui/material/CardContent';
 import Card from '@mui/material/Card';
 
-const FilterModal = (props) => {
+// this modal is just for filter
 
-  console.log(props.open)
+const FilterModal = (props) => {
 
   return (
     <>
-        <Dialog open={props.open} onClose={props.handleFilterClose}>
-        <Card sx={{ minWidth: 275 }}>
-            <CardContent>
-            <FilterForm handleFilterClose={props.handleFilterClose} data={props.data}
-            setData={props.setData}/>
-            </CardContent>
-        </Card>
+        <Dialog open={props.open} onClose={props.handleFilterClose} >
+          <Card sx={{ minWidth: 275 }}>
+              <CardContent>
+                <FilterForm handleFilterClose={props.handleFilterClose} data={props.data} setData={props.setData}/>
+              </CardContent>
+          </Card>
         </Dialog>
     </>
   ) 

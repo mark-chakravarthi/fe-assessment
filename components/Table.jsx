@@ -13,8 +13,11 @@ import deletebtn from "../images/deletebtn.png";
 
 export default function TableData(props) {
 
-  const data=props.data;
-  const setData=props.setData;
+  // table data to be displayed
+  const data = props.data;
+  const setData = props.setData;
+
+  // handle open and close of modal
 
   const [open, setOpen] = useState(false);
 
@@ -26,23 +29,25 @@ export default function TableData(props) {
       setOpen(false);
   };
 
-  // const [filterOpen, setFilterOpen] = useState(false);
-
-  //   function handleFilterClose() {
-  //       setFilterOpen(false);
-  //   }
+  // item id to be updated
 
   const [updateItemId, setUpdateItemId] = useState('');
+
+  // calling get request providing page no.
 
   useEffect(() => {
     getData(props.page);
   }, [props.page]);
 
+  // get request with pagination
+
   function getData(page){
-    fetch(`${process.env.BASE_URL}/roles/paging?pageSize=2&pageNo=${page-1}`)
+    fetch(`${process.env.BASE_URL}/roles/paging?pageSize=4&pageNo=${page-1}`)
         .then((res) => res.json())
         .then((data) => setData(data.content));
   }
+
+  // delete request with pagination
 
   async function deleteData(id) {
     console.log(id)
@@ -55,15 +60,13 @@ export default function TableData(props) {
 
   return (
     <>
+
+        {/* open modal to update  */}
+
         {
         open && 
         <DialogModal open={open} handleClose={handleClose} itemId = {updateItemId} setUpdateItemId = {setUpdateItemId} />
         }
-
-        {/* {
-        filterOpen && 
-        <FilterModal open={filterOpen} handleFilterClose={handleFilterClose} />
-        } */}
 
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">

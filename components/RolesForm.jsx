@@ -1,24 +1,30 @@
 import { useState } from 'react';
-import { TextField, Button, Grid } from '@mui/material';
+import { TextField, Button, Grid , Typography, Divider} from '@mui/material';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { useEffect } from 'react';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import dayjs from 'dayjs';
 
 const RoleForm = (props) => {
+
+  // role form fields
   const [roleName, setRoleName] = useState('');
   const [organizationName, setOrganizationName] = useState('');
   const [roleId, setRoleId] = useState('');
   const [selectedDate, setSelectedDate] = useState();
   const [roleState, setRoleState] = useState('');
+
+  // is it update or add to control modal
   const [isUpdateState, setIsUpdateState] = useState(false);
+
+  // which item is getting updated 
   const [isUpdateId, setIsUpdateId] = useState('');
+
+  // role id valid invalid state
   const [isvalidId, setisvalidId] = useState(true);
 
   async function postData(){
+
+    // post request
     const res = await fetch(`${process.env.BASE_URL}/roles`, {
         method: 'POST',
         headers: {
@@ -33,7 +39,7 @@ const RoleForm = (props) => {
         })
       });
 
-      if (res.ok && isvalidId) {
+      if (res.ok) {
         alert('Added successfully!');
         setRoleName('');
         setOrganizationName('');
@@ -47,6 +53,8 @@ const RoleForm = (props) => {
       }
   }
 
+
+  // update request
    async function putItemData(roleId){
     const res = await fetch(`${process.env.BASE_URL}/roles/${roleId}`, {
         method: 'PUT',
@@ -63,7 +71,7 @@ const RoleForm = (props) => {
             })
       })
 
-      if (res.ok && isvalidId) {
+      if (res.ok) {
         alert('Data Updated successfully!');
         setRoleName('');
         setOrganizationName('');
@@ -78,22 +86,15 @@ const RoleForm = (props) => {
       }
   }
 
+
+  // get item by id for update fields
   function getItemData(id){
     fetch(`${process.env.BASE_URL}/roles/${id}`)
         .then((res) => res.json())
         .then((data) => {
         setRoleName(data.roleName);
         setOrganizationName(data.orgName);
-
-        // const dateObj = new Date(data.createdDate);
-        // const weekday = dateObj.toLocaleString('default', { weekday: 'long' });
-        // const month = dateObj.toLocaleString('default', { month: 'long' });
-        // const day = dateObj.getDate();
-        // const year = dateObj.getFullYear();
-        // const longDate = `${weekday} ${month} ${day} ${year}`;
-
         setSelectedDate(data.createdDate);
-        
         setRoleState(data.roleState);
         setRoleId(data.roleId);
         setIsUpdateState(true);
@@ -112,129 +113,134 @@ const RoleForm = (props) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if(!isUpdateState)
+    if(!isUpdateState && isvalidId)
         postData();
-    else
+    else if(isUpdateState && isvalidId)
         putItemData(isUpdateId)
+
+    else 
+        alert('Please enter valid role ID');
     };
+
+    // test whether role id is valid
 
     const handleroleId = (e) => {
         setRoleId(e.target.value)
         const reg = new RegExp("^[A-Z]{3}[0-9]{3}$");
-        //test whether input is valid
         setisvalidId(reg.test(e.target.value));
     }
 
-    // const dateHandler = (date) => {
-    //   const dateObj = new Date(date);
-    //   const year = dateObj.getFullYear();
-    //   const month = ('0' + (dateObj.getMonth() + 1)).slice(-2);
-    //   const day = ('0' + dateObj.getDate()).slice(-2);
-    //   const isoDate = `${year}-${month}-${day}`;
-    //   console.log(isoDate);
-    //   setSelectedDate(isoDate);
-    //}
-
   return (
-    <div style={{'display': 'flex'}}>
-        <form onSubmit={handleSubmit}>
-        <TextField
-        label="Role Name"
-        variant="outlined"
-        margin="normal"
-        value={roleName}
-        onChange={e=>{
-            setRoleName(e.target.value)
-        }}
-        fullWidth
-        required
-      />
 
-      <TextField
-        label="Organization Name"
-        variant="outlined"
-        margin="normal"
-        value={organizationName}
-        onChange={e=>{
-            setOrganizationName(e.target.value)
-           
-        }}
-        fullWidth
-        required
-      />
+    <form  onSubmit={handleSubmit}>
 
-      {/* <TextField
-        label="Created Date"
-        variant="outlined"
-        margin="normal"
-        value={selectedDate}
-        onChange={e=>{
-            setSelectedDate(e.target.value)
-        }}
-        fullWidth
-        required
-      /> */}
+      <Grid
+          container
+          sx={{
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: 1,
+          marginBottom: 2,
+          }}
+      >
 
-      <TextField
-        label="Created Date"
-        variant="outlined"
-        margin="normal"
-        value={selectedDate}
-        onChange={e=>{
-          setSelectedDate(e.target.value)
-        }}
-        fullWidth
-        required
-      />
+        <Grid item xs={9}>
+            <Typography variant="h6" sx={{ marginLeft: 3, color: "black" }}>
+            {
+                isUpdateState && "Update" ||  "Add"
+            }
+            </Typography>
+        </Grid>
+                    
+        <Grid item xs={3}>
+            <Button variant='outlined' color="error" sx={{ width:80}} onClick={props.handleClose}>
+                Cancel
+            </Button>
+        </Grid>
 
-      {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker onChange={(date) => setSelectedDate(new Date(date))}
-          // onChange={dateHandler}
-          // disablePast={true}
-          // defaultValue={new Date('2022-01-01')}
-          value={selectedDate}
-          // renderInput={(params) => <TextField {...params} />}
-          format="DD/MM/YYYY"
-        />
-      </LocalizationProvider> */}
+    </Grid>
 
-      {/* <DatePicker
-        label="Select Date"
-        value={selectedDate}
-        onChange={handleDateChange}
-        renderInput={(params) => <TextField {...params} />}
-      /> */}
+    <Divider />
 
-    <Select
-      value={roleState}
-      onChange={e=>{
-        setRoleState(e.target.value)
-      }}
-      label="Role State"
-      variant="outlined"
-      margin="normal"
-      sx={{ width: 200 }}
-    >
-      <MenuItem value={true}>active</MenuItem>
-      <MenuItem value= {false}>inactive</MenuItem>
-    </Select>
 
-      <TextField
-        label="Role Id"
-        variant="outlined"
-        margin="normal"
-        value={roleId}
-        onChange={handleroleId}
-        error={!isvalidId}
-        fullWidth
-        required
-      />    
-      <Button type="submit" sx={{color:"#fff",backgroundColor: "#4D47C3"}}>
-        {
-            isUpdateState && "Update" ||  "ADD"
-        }
-      </Button>
-    </form></div>
+    <Grid container sx={{ margin: 3 }}>
+        
+        <Grid item xs={3} sx={{ marginBottom: 3 }}>
+            <TextField
+                variant="outlined"
+                label="Role Name"
+                sx={{ Padding: 5 }}
+                value={roleName}
+                onChange={e=>{
+                  setRoleName(e.target.value)
+              }}
+              required
+            />
+        </Grid>
+
+        <Grid item xs={4} sx={{ marginBottom: 3 , marginLeft : 3 }}>
+            <TextField
+                variant="outlined"
+                label="Organisation Name"
+                value={organizationName}
+                onChange={e=>{
+                  setOrganizationName(e.target.value)
+                
+              }}
+                required
+            />
+        </Grid>
+
+        <Grid item xs={3} sx={{ marginBottom: 3 , marginLeft : 3 }}>
+            <TextField
+                variant="outlined"
+                label="Created Date"
+                value={selectedDate}
+                onChange={e=>{
+                  setSelectedDate(e.target.value)
+                }}
+                required
+            />
+        </Grid>
+
+        <Grid item xs={5} sx={{ marginBottom: 3 }}>
+            <Select
+                value={roleState}
+                onChange={e=>{
+                  setRoleState(e.target.value)
+                }}
+                label="Role State"
+                variant="outlined"
+                sx={{ width: 142 }}
+                required
+                >
+                <MenuItem value={true}>active</MenuItem>
+                <MenuItem value= {false}>inactive</MenuItem>
+            </Select>
+        </Grid>
+
+        <Grid item xs={5} sx={{ marginBottom: 3 }}>
+            <TextField
+                variant="outlined"
+                label="Role Id"
+                value={roleId}
+                onChange={handleroleId}
+                error={!isvalidId}
+                required
+            />
+        </Grid>
+
+        <div>
+            <Button type="submit" variant='contained' sx={{color:"#fff" , width:120}}>
+            {
+                isUpdateState && "Update" ||  "ADD"
+            }
+          </Button>
+        </div>
+        
+    </Grid>
+
+    </form>
 
   );
 }

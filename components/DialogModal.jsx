@@ -4,6 +4,8 @@ import RoleForm from './RolesForm'
 import CardContent from '@mui/material/CardContent';
 import Card from '@mui/material/Card';
 
+// open and close this modal based on add or update
+
 const DialogModal = (props) => {
   return (
     <>
