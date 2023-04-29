@@ -11,7 +11,7 @@ const FilterForm = (props) => {
   const [wId, setWid] = useState("");
   const setWholesalerDetails=props.setWholesalerDetails;
   const setIsLastPage=props.setIsLastPage;
-  const IsLastPage=props.IsLastPage;
+  // const isLastPage=props.isLastPage;
   const filterDetails = {
     firstName: fname,
     lastName: lname,
@@ -21,20 +21,19 @@ const FilterForm = (props) => {
   };
 
   async function handleFilter() {
-    console.log(filterDetails,'inside handleFilter');
-    AxiosInstance.get("filter?pageNo=0&pageSize=5", {params:filterDetails})
+    AxiosInstance.get(`filter?pageNo=${props.page-1}&pageSize=5`, {params:filterDetails})
       .then((response) => {
         // Handle response
-        // console.log(response.data.content);
-        setWholesalerDetails(response.data.pageList);
         setIsLastPage(response.data.lastPage)
-        console.log(IsLastPage,'in filter form');
+        setWholesalerDetails(response.data.pageList);
+        console.log(response.data,'');
       })
       .catch((err) => {
         // Handle errors
         console.error(err);
       });
   }
+
   function handleClear(){
     setFname('');
     setLname("");
@@ -109,7 +108,7 @@ const FilterForm = (props) => {
         </Grid>
 
         <div>
-          <Button variant="contained" color="primary" onClick={handleFilter}>
+          <Button  variant="contained" color="primary" onClick={handleFilter}>
             continue
           </Button>
         </div>

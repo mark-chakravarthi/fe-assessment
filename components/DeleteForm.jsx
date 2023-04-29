@@ -1,16 +1,25 @@
-// import { Padding } from "@mui/icons-material";
-import { Button, TextField, Grid, Typography, Divider, DialogTitle } from "@mui/material";
-import { useState } from "react";
+import {
+  Button,
+  TextField,
+  Grid,
+  Typography,
+  Divider,
+  DialogTitle,
+} from "@mui/material";
 import { AxiosInstance } from "@/axios/ConfigAxios";
 
 const DeleteForm = (props) => {
-  async function handleSubmit(){
-    const res=await AxiosInstance.delete(`${props.wid}`);
-    console.log("in delete");
+  const setAlert=props.setAlert;
+  const setMessage=props.setMessage;
+  async function handleSubmit() {
+    const res = await AxiosInstance.delete(`${props.wid}`);
+    if(res.data.status==='ACCEPTED'){
+      setAlert(true);
+      setMessage(res.data.message);
+    }
   }
-  console.log(props.wid);
   return (
-    <form >
+    <form>
       <Grid
         container
         sx={{
@@ -24,7 +33,6 @@ const DeleteForm = (props) => {
           <Typography variant="h5" sx={{ marginLeft: 3, color: "blue" }}>
             Delete
           </Typography>
-          {/* <DialogTitle>Delte</DialogTitle> */}
         </Grid>
       </Grid>
       <Divider />

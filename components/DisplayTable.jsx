@@ -16,14 +16,17 @@ import EditForm from "./EditForm";
 import DeleteForm from "./DeleteForm";
 import { AxiosInstance } from "@/axios/ConfigAxios";
 
+
 const DisplayTable = (props) => {
-  // const [wholesalerDetails, setWholesalerDetails] = useState([]);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [dId, setDId] = useState(undefined);
   const [wholesalerDetailForEdit, setWholesalerDetailForEdit] = useState(
     undefined
   );
+  const setAlert=props.setAlert;
+  const setMessage=props.setMessage;
+
   const wholesalerDetails = props.wholesalerDetails;
   const setWholesalerDetails = props.setWholesalerDetails;
 
@@ -69,7 +72,6 @@ const DisplayTable = (props) => {
   }
   function handleDelete(wid) {
     setDId(wid);
-    // console.log("in handle delte", dId);
   }
   function handleEdit(fname, lname, email, pno, wId, role, locId) {
     const existingDetails = {
@@ -86,6 +88,8 @@ const DisplayTable = (props) => {
   }
   return (
     <>
+      
+
       <TableContainer component={Paper} sx={{ width: "120%" }}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -149,6 +153,8 @@ const DisplayTable = (props) => {
             wDetail={wholesalerDetailForEdit}
             wholesalerDetails={wholesalerDetails}
             setWholesalerDetails={setWholesalerDetails}
+            setAlert={setAlert}
+            setMessage={setMessage}
           />
         }
         handleClose={handleCloseEditModal}
@@ -156,7 +162,9 @@ const DisplayTable = (props) => {
 
       <DialogModal
         open={openDeleteModal}
-        children={<DeleteForm wid={dId} />}
+        children={
+          <DeleteForm wid={dId} setAlert={setAlert} setMessage={setMessage} />
+        }
         handleClose={handleCloseDeleteModal}
         maxWidth="xs"
       />

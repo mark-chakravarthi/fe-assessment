@@ -4,7 +4,7 @@ const DisplayPagination = (props) => {
   function handleChange(e, value) {
     props.setPage(value);
   }
-  console.log(props.IsLastPage,"lastpage");
+  console.log(props.page," page in pagination");
   return (
     <>
       <Grid container style={{bottom:0}}>
@@ -17,13 +17,6 @@ const DisplayPagination = (props) => {
             page={props.page}
             color="primary"
             onChange={handleChange}
-            nextIconButtonProps={
-              !props.IsLastPage
-                ? {
-                    disabled: !props.IsLastPage
-                  }
-                : undefined
-            }
           />
         </Grid>
       </Grid>
@@ -32,3 +25,4 @@ const DisplayPagination = (props) => {
 };
 
 export default DisplayPagination;
+

@@ -1,4 +1,3 @@
-// import { Padding } from "@mui/icons-material";
 import {
   Button,
   TextField,
@@ -10,15 +9,26 @@ import {
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import { AxiosInstance } from "@/axios/ConfigAxios";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { schema } from "../validations/Editval";
 const EditForm = (props) => {
+  const {
+    formState: { errors },
+    register,
+  } = useForm({
+    resolver: yupResolver(schema),
+    mode: "onTouched",
+  });
   const wDetails = props.wDetail;
   const [fname, setFname] = useState(wDetails.fname);
   const [lname, setLname] = useState(wDetails.lname);
   const [email, setEmail] = useState(wDetails.email);
   const [phoneNo, setPhoneNo] = useState(wDetails.pno);
   const [locId, setlocId] = useState(wDetails.locId);
-  // console.log('in edit form',wDetails);
   const [role, setRole] = useState(wDetails.role);
+  const setAlert=props.setAlert;
+  const setMessage=props.setMessage;
 
   const wholesalerDetail = {
     firstName: fname,
@@ -31,7 +41,10 @@ const EditForm = (props) => {
   };
   async function handleUpdate() {
     const res = await AxiosInstance.put(`${wDetails.wId}`, wholesalerDetail);
-    // console.log(wholesalerDetail,'inside axios update');
+    if(res.status===200){
+      setAlert(true);
+      setMessage('Successfully Updated!');
+    }
   }
   return (
     <form>
@@ -47,6 +60,10 @@ const EditForm = (props) => {
           <TextField
             variant="outlined"
             label="FirstName"
+            name="FirstName"
+            {...register("FirstName")}
+            error={!!errors?.FirstName}
+            helperText={errors?.FirstName?.message}
             sx={{ Padding: 5 }}
             defaultValue={fname}
             onChange={(e) => setFname(e.target.value)}
@@ -56,6 +73,10 @@ const EditForm = (props) => {
           <TextField
             variant="outlined"
             label="LastName"
+            name="LastName"
+            {...register("LastName")}
+            error={!!errors?.LastName}
+            helperText={errors?.LastName?.message}
             defaultValue={lname}
             onChange={(e) => setLname(e.target.value)}
           />
@@ -64,6 +85,10 @@ const EditForm = (props) => {
           <TextField
             variant="outlined"
             label="Email ID"
+            name="EmailId"
+            {...register("EmailId")}
+            error={!!errors?.EmailId}
+            helperText={errors?.EmailId?.message}
             defaultValue={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -72,6 +97,10 @@ const EditForm = (props) => {
           <TextField
             variant="outlined"
             label="Phone Number"
+            name="PhoneNo"
+            {...register("PhoneNo")}
+            error={!!errors?.PhoneNo}
+            helperText={errors?.PhoneNo?.message}
             defaultValue={phoneNo}
             onChange={(e) => setPhoneNo(e.target.value)}
           />
@@ -80,7 +109,7 @@ const EditForm = (props) => {
           <TextField
             variant="outlined"
             label="Wholesaler Id"
-            disabled="true"
+            disabled={true}
             defaultValue={wDetails.wId}
           />
         </Grid>
@@ -102,15 +131,16 @@ const EditForm = (props) => {
           <TextField
             variant="outlined"
             label="LOC id"
+            name="LOCId"
+            {...register("LOCId")}
+            error={!!errors?.LOCId}
+            helperText={errors?.LOCId?.message}
             defaultValue={locId}
             onChange={(e) => setlocId(e.target.value)}
           />
         </Grid>
 
         <div>
-          {/* <Button variant="contained" color="error" onClick={props.handleClose}>
-            Cancel
-          </Button> */}
           <Button variant="contained" color="primary" onClick={handleUpdate}>
             Update
           </Button>

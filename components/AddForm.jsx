@@ -1,4 +1,3 @@
-// import { Padding } from "@mui/icons-material";
 import {
   Button,
   TextField,
@@ -10,49 +9,18 @@ import {
 } from "@mui/material";
 import { useState, useRef } from "react";
 import { AxiosInstance } from "@/axios/ConfigAxios";
-// import { useForm } from "react-hook-form";
-// import * as Yup from "yup";
-// import { yupResolver } from "@hookform/resolvers/yup";
-
-// const schema = Yup.object().shape({
-//   FirstName: Yup.string()
-//     .required()
-//     // .min(3, "minimum 3 characters long")
-//     // .matches(/^[A-Za-z]+$/, "Only alphabets allowed")
-//     .label("Name"),
-//   LastName: Yup.string()
-//     .required()
-//     // .min(3, "minimum 3 characters long")
-//     // .matches(/^[A-Za-z]+$/, "Only alphabets allowed")
-//     .label("Name"),
-//   EmailId: Yup.string()
-//     .required()
-//     // .min(3, "minimum 3 characters long")
-//     // .matches(/^[A-Za-z]+$/, "Only alphabets allowed")
-//     .label("Name"),
-//   PhoneNo: Yup.string()
-//     .required()
-//     .label("date"),
-//   WholesalerId: Yup.string()
-//     .required()
-//     .label("date"),
-//   // Role: Yup.string()
-//   //   .required()
-//   //   .label("role"),
-//   LocId: Yup.string()
-//     .required()
-//     .label("date"),
-// });
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { schema } from "../validations/Addval";
 
 const AddForm = (props) => {
-  // const {
-  //   handleSubmit,
-  //   formState: { errors },
-  //   register,
-  // } = useForm({
-  //   resolver: yupResolver(schema),
-  //   mode: "onTouched",
-  // });
+  const {
+    formState: { errors },
+    register,
+  } = useForm({
+    resolver: yupResolver(schema),
+    mode: "onTouched",
+  });
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
   const [email, setEmail] = useState("");
@@ -60,31 +28,11 @@ const AddForm = (props) => {
   const [role, setRole] = useState("SUPER_ADMIN");
   const [wId, setWid] = useState("");
   const [locId, setlocId] = useState("");
-  // const [wholesalerDetail, setWholesalerDetail] = useState({});
-  // const fnameRef = useRef(null);
-  // const lnameRef = useRef();
-  // const emailIdRef = useRef();
-  // const phoneNoRef = useRef();
-  // const wIdRef = useRef();
-  // const locIdRef = useRef();
+  const [addAlert, setAddAlert] = useState(false);
+  const [nullAlert, setNullAlert] = useState(false);
 
-  // const submit = data => {
-  //   console.log(data);
-  // };
-  // function handleDetailsChange(e) {
-  //   const newWholesaler = {
-  //     firstName: fnameRef.current.value,
-  //     lastName: lnameRef.current.value,
-  //     emailId: emailIdRef.current.value,
-  //     phoneNo: phoneNoRef.current.value,
-  //     wholesalerId: wIdRef.current.value,
-  //     wRole: role,
-  //     locId: locIdRef.current.value,
-  //   };
-  //   console.log(fnameRef.current.value);
-  //   setWholesalerDetail(newWholesaler);
-  // }
-  // console.log(wholesalerDetail);
+  const setAlert = props.setAlert;
+  const setMessage = props.setMessage;
   const wholesalerDetail = {
     firstName: fname,
     lastName: lname,
@@ -94,12 +42,31 @@ const AddForm = (props) => {
     role: role,
     locId: locId,
   };
-  async function handleSubmit() {
-    const res = await AxiosInstance.post("WholeSellers",wholesalerDetail);
-    // console.log(wholesalerDetail);
+  const setOpenModal = props.setOpenModal;
+  async function handleSubmit(e) {
+    e.preventDefault();
+    try {
+      const res = await AxiosInstance.post("WholeSellers", wholesalerDetail);
+      setOpenModal(false);
+      if (res.status == 200) {
+        setAlert(true);
+        setMessage("Successfully Added Wholesaler");
+      }
+    } catch (e) {
+      console.log(e);
+      if (
+        e.response.data.statusCode === 404 &&
+        e.response.data.message === "This WholeSalerId Already Exists"
+      ) {
+        setAddAlert(true);
+      }
+      if (e.response.status === 400) {
+        setNullAlert(true);
+      }
+    }
   }
   return (
-    <form >
+    <form>
       <Typography
         variant="h5"
         sx={{ marginLeft: 3, marginTop: 3, color: "blue" }}
@@ -113,7 +80,9 @@ const AddForm = (props) => {
             variant="outlined"
             label="FirstName"
             name="FirstName"
-            // {...register("FirstName")}
+            {...register("FirstName")}
+            error={!!errors?.FirstName}
+            helperText={errors?.FirstName?.message}
             sx={{ Padding: 5 }}
             onChange={(e) => setFname(e.target.value)}
           />
@@ -123,9 +92,9 @@ const AddForm = (props) => {
             variant="outlined"
             label="LastName"
             name="LastName"
-            // {...register("LastName")}
-
-            // ref={lnameRef}
+            {...register("LastName")}
+            error={!!errors?.LastName}
+            helperText={errors?.LastName?.message}
             onChange={(e) => setLname(e.target.value)}
           />
         </Grid>
@@ -134,9 +103,9 @@ const AddForm = (props) => {
             variant="outlined"
             label="Email ID"
             name="EmailId"
-            // {...register("EmailId")}
-
-            // ref={emailIdRef}
+            {...register("EmailId")}
+            error={!!errors?.EmailId}
+            helperText={errors?.EmailId?.message}
             onChange={(e) => setEmail(e.target.value)}
           />
         </Grid>
@@ -145,9 +114,9 @@ const AddForm = (props) => {
             variant="outlined"
             label="Phone Number"
             name="PhoneNo"
-            // {...register("PhoneNo")}
-
-            // ref={phoneNoRef}
+            {...register("PhoneNo")}
+            error={!!errors?.PhoneNo}
+            helperText={errors?.PhoneNo?.message}
             onChange={(e) => setPhoneNo(e.target.value)}
           />
         </Grid>
@@ -156,9 +125,13 @@ const AddForm = (props) => {
             variant="outlined"
             label="Wholesaler Id"
             name="WholesalerId"
-            // {...register("WholesalerId")}
-
-            // ref={wIdRef}
+            {...register("WholesalerId")}
+            error={!!errors?.WholesalerId}
+            helperText={
+              addAlert
+                ? "This WholeSalerId Already Exists!"
+                : errors?.WholesalerId?.message
+            }
             onChange={(e) => setWid(e.target.value)}
           />
         </Grid>
@@ -168,8 +141,6 @@ const AddForm = (props) => {
             id="role-select"
             value={role}
             name="Role"
-            // {...register("Role")}
-
             onChange={(e) => setRole(e.target.value)}
             sx={{ width: 225 }}
           >
@@ -182,19 +153,27 @@ const AddForm = (props) => {
         <Grid item xs={12} sx={{ marginBottom: 3 }}>
           <TextField
             variant="outlined"
-            label="LOC id"
+            label="LOC Id"
             name="LOCId"
-            // {...register("LOCId")}
-
-            // ref={locIdRef}
+            {...register("LOCId")}
+            error={!!errors?.LOCId}
+            helperText={errors?.LOCId?.message}
             onChange={(e) => setlocId(e.target.value)}
           />
         </Grid>
 
+        {nullAlert && (
+          <Grid item xs={12}>
+            <p style={{ color: "red", fontFamily: "monospace" }}>
+              Enter valid Details!
+            </p>
+          </Grid>
+        )}
         <div>
           <Button
             variant="contained"
             color="primary"
+            type="submit"
             onClick={handleSubmit}
           >
             Add
