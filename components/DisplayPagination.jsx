@@ -4,7 +4,7 @@ const DisplayPagination = (props) => {
   function handleChange(e, value) {
     props.setPage(value);
   }
-  console.log(props.page," page in pagination");
+  // console.log(props.page," page in pagination");
   return (
     <>
       <Grid container style={{bottom:0}}>

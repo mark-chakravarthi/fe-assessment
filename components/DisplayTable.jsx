@@ -27,6 +27,7 @@ const DisplayTable = (props) => {
   const setAlert=props.setAlert;
   const setMessage=props.setMessage;
 
+  const openAddModal=props.openAddModal;
   const wholesalerDetails = props.wholesalerDetails;
   const setWholesalerDetails = props.setWholesalerDetails;
 
@@ -44,8 +45,9 @@ const DisplayTable = (props) => {
   }
 
   useEffect(() => {
+    if(!openAddModal||!openEditModal||!openDeleteModal)
     getWholesalerDetails(props.page);
-  }, [props.page]);
+  }, [props.page,openAddModal,openEditModal,openDeleteModal]);
 
   useEffect(() => {
     if (dId !== undefined && openDeleteModal === false) {

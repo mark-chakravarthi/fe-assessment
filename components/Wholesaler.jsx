@@ -100,6 +100,7 @@ const Wholesaler = () => {
             setWholesalerDetails={setWholesalerDetails}
             setAlert={setAlert}
             setMessage={setMessage}
+            openAddModal={openAddModal}
           />
         </Grid>
         <DisplayPagination
