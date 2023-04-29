@@ -1,6 +1,5 @@
 import {
   Button,
-  TextField,
   Grid,
   Typography,
   Divider,
@@ -9,16 +8,20 @@ import {
 import { AxiosInstance } from "@/axios/ConfigAxios";
 
 const DeleteForm = (props) => {
-  const setOpenDeleteModal=props.setOpenDeleteModal;
+  const setOpenDeleteModal = props.setOpenDeleteModal;
   const setAlert = props.setAlert;
   const setMessage = props.setMessage;
-  async function handleSubmit() {
-    setOpenDeleteModal(false);
+
+  async function DeleteRequest() {
     const res = await AxiosInstance.delete(`${props.wid}`);
     if (res.data.status === "ACCEPTED") {
       setAlert(true);
       setMessage(res.data.message);
     }
+  }
+  function handleSubmit() {
+    setOpenDeleteModal(false);
+    DeleteRequest();
   }
   function handleClose() {
     setOpenDeleteModal(false);

@@ -6,11 +6,12 @@ const DisplayPagination = (props) => {
   }
   return (
     <>
-      <Grid container style={{bottom:0}}>
-        <Grid item xs={3}>
-          <Typography>Page: {props.page}</Typography>
+      <Grid container >
+        <Grid item  xs={3}>
+          <Typography sx={{textAlign:'center'}}>Page: {props.page}</Typography>
         </Grid>
-        <Grid item xs={9}>
+        <Grid item xs={1}></Grid>
+        <Grid item xs={8}>
           <Pagination
             count={10}
             page={props.page}

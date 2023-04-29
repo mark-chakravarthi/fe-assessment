@@ -5,7 +5,7 @@ import {
   Divider,
   IconButton,
   BottomNavigation,
-  Paper
+  Paper,
 } from "@mui/material";
 import Image from "next/image";
 import filter from "../images/filter.png";
@@ -61,7 +61,7 @@ const Wholesaler = () => {
           {message}
         </Alert>
       </Collapse>
-      <Grid container sx={{ margin: 5 }} rowSpacing={4}>
+      <Grid container sx={{ marginTop: 2,marginLeft:5,marginRight:5 }} rowSpacing={4}>
         <Grid item xs={8}>
           <Typography
             variant="subtitle1"
@@ -127,14 +127,11 @@ const Wholesaler = () => {
             />
           )}
         </Grid>
-        {/* <Paper
-          sx={{ position: "fixed", bottom: 0, left: 0, right: 0,width:'inherit'}}
-          elevation={2}
-        >
-          <BottomNavigation sx={{ width: 500 }}> */}
+        <Paper sx={{ position: "fixed", bottom: 0, left: 288, right: 0 }}>
+          <BottomNavigation sx={{alignItems:'center'}}>
             <DisplayPagination page={page} setPage={setPage} />
-          {/* </BottomNavigation>
-        </Paper> */}
+          </BottomNavigation>
+        </Paper>
         <DialogModal
           open={openAddModal}
           children={
