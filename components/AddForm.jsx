@@ -6,7 +6,7 @@ import {
   Grid,
   Typography,
   Divider,
-  DialogActions
+  DialogActions,
 } from "@mui/material";
 import { useState, useRef } from "react";
 import { AxiosInstance } from "@/axios/ConfigAxios";
@@ -31,6 +31,7 @@ const AddForm = (props) => {
   const [locId, setlocId] = useState("");
   const [addAlert, setAddAlert] = useState(false);
   const [nullAlert, setNullAlert] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(false);
 
   const setAlert = props.setAlert;
   const setMessage = props.setMessage;
@@ -44,14 +45,15 @@ const AddForm = (props) => {
     locId: locId,
   };
   const setOpenModal = props.setOpenModal;
-  async function handleSubmit(e) {
-    e.preventDefault();
+  async function postDetails() {
     try {
       const res = await AxiosInstance.post("WholeSellers", wholesalerDetail);
       setOpenModal(false);
       if (res.status == 200) {
         setAlert(true);
         setMessage("Successfully Added Wholesaler");
+        // setIsDisabled(false);
+        // clearInterval(timer);
       }
     } catch (e) {
       console.log(e);
@@ -65,6 +67,14 @@ const AddForm = (props) => {
         setNullAlert(true);
       }
     }
+  }
+  function handleSubmit(e) {
+    e.preventDefault();
+    setIsDisabled(true);
+    setTimeout(() => {
+      setIsDisabled(false);
+    }, 1000);
+    postDetails();
   }
   return (
     <form>
@@ -177,6 +187,7 @@ const AddForm = (props) => {
               color="primary"
               type="submit"
               onClick={handleSubmit}
+              disabled={isDisabled}
             >
               Add
             </Button>
