@@ -6,6 +6,7 @@ import {
   Grid,
   Typography,
   Divider,
+  DialogActions,
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import { AxiosInstance } from "@/axios/ConfigAxios";
@@ -27,8 +28,9 @@ const EditForm = (props) => {
   const [phoneNo, setPhoneNo] = useState(wDetails.pno);
   const [locId, setlocId] = useState(wDetails.locId);
   const [role, setRole] = useState(wDetails.role);
-  const setAlert=props.setAlert;
-  const setMessage=props.setMessage;
+  const setAlert = props.setAlert;
+  const setMessage = props.setMessage;
+  const setOpenEditModal = props.setOpenEditModal;
 
   const wholesalerDetail = {
     firstName: fname,
@@ -40,10 +42,11 @@ const EditForm = (props) => {
     locId: locId,
   };
   async function handleUpdate() {
+    setOpenEditModal(false);
     const res = await AxiosInstance.put(`${wDetails.wId}`, wholesalerDetail);
-    if(res.status===200){
+    if (res.status === 200) {
       setAlert(true);
-      setMessage('Successfully Updated!');
+      setMessage("Successfully Updated!");
     }
   }
   return (
@@ -140,11 +143,13 @@ const EditForm = (props) => {
           />
         </Grid>
 
-        <div>
-          <Button variant="contained" color="primary" onClick={handleUpdate}>
-            Update
-          </Button>
-        </div>
+        <DialogActions>
+          <div>
+            <Button variant="contained" color="primary" onClick={handleUpdate}>
+              Update
+            </Button>
+          </div>
+        </DialogActions>
       </Grid>
     </form>
   );

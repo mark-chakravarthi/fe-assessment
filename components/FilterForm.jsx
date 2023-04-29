@@ -1,5 +1,5 @@
 // import { Padding } from "@mui/icons-material";
-import { Button, TextField, Grid, Typography, Divider } from "@mui/material";
+import { Button, TextField, Grid, Typography, Divider,DialogActions } from "@mui/material";
 import { useState } from "react";
 import { AxiosInstance } from "@/axios/ConfigAxios";
 
@@ -9,8 +9,9 @@ const FilterForm = (props) => {
   const [email, setEmail] = useState("");
   const [phoneNo, setPhoneNo] = useState("");
   const [wId, setWid] = useState("");
-  const setWholesalerDetails=props.setWholesalerDetails;
-  const setIsLastPage=props.setIsLastPage;
+  const setWholesalerDetails = props.setWholesalerDetails;
+  const setIsLastPage = props.setIsLastPage;
+  const setOpenFilterModal=props.setOpenFilterModal;
   // const isLastPage=props.isLastPage;
   const filterDetails = {
     firstName: fname,
@@ -21,12 +22,15 @@ const FilterForm = (props) => {
   };
 
   async function handleFilter() {
-    AxiosInstance.get(`filter?pageNo=${props.page-1}&pageSize=5`, {params:filterDetails})
+    setOpenFilterModal(false);
+    AxiosInstance.get(`filter?pageNo=${props.page - 1}&pageSize=5`, {
+      params: filterDetails,
+    })
       .then((response) => {
         // Handle response
-        setIsLastPage(response.data.lastPage)
+        setIsLastPage(response.data.lastPage);
         setWholesalerDetails(response.data.pageList);
-        console.log(response.data,'');
+        console.log(response.data, "");
       })
       .catch((err) => {
         // Handle errors
@@ -34,11 +38,11 @@ const FilterForm = (props) => {
       });
   }
 
-  function handleClear(){
-    setFname('');
+  function handleClear() {
+    setFname("");
     setLname("");
-    setEmail('');
-    setPhoneNo('');
+    setEmail("");
+    setPhoneNo("");
     setWid("");
   }
   return (
@@ -106,12 +110,13 @@ const FilterForm = (props) => {
             onChange={(e) => setWid(e.target.value)}
           />
         </Grid>
-
-        <div>
-          <Button  variant="contained" color="primary" onClick={handleFilter}>
-            continue
-          </Button>
-        </div>
+        <DialogActions>
+          <div>
+            <Button variant="contained" color="primary" onClick={handleFilter}>
+              continue
+            </Button>
+          </div>
+        </DialogActions>
       </Grid>
     </form>
   );

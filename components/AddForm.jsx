@@ -6,6 +6,7 @@ import {
   Grid,
   Typography,
   Divider,
+  DialogActions
 } from "@mui/material";
 import { useState, useRef } from "react";
 import { AxiosInstance } from "@/axios/ConfigAxios";
@@ -170,14 +171,16 @@ const AddForm = (props) => {
           </Grid>
         )}
         <div>
-          <Button
-            variant="contained"
-            color="primary"
-            type="submit"
-            onClick={handleSubmit}
-          >
-            Add
-          </Button>
+          <DialogActions>
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit"
+              onClick={handleSubmit}
+            >
+              Add
+            </Button>
+          </DialogActions>
         </div>
       </Grid>
     </form>

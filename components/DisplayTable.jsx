@@ -71,9 +71,11 @@ const DisplayTable = (props) => {
     setOpenDeleteModal(false);
   }
   function handleDelete(wid) {
+    setOpenDeleteModal(true);
     setDId(wid);
   }
   function handleEdit(fname, lname, email, pno, wId, role, locId) {
+    // setOpenEditModal(true);
     const existingDetails = {
       fname: fname,
       lname: lname,
@@ -155,6 +157,7 @@ const DisplayTable = (props) => {
             setWholesalerDetails={setWholesalerDetails}
             setAlert={setAlert}
             setMessage={setMessage}
+            setOpenEditModal={setOpenEditModal}
           />
         }
         handleClose={handleCloseEditModal}
@@ -163,7 +166,7 @@ const DisplayTable = (props) => {
       <DialogModal
         open={openDeleteModal}
         children={
-          <DeleteForm wid={dId} setAlert={setAlert} setMessage={setMessage} />
+          <DeleteForm wid={dId} setAlert={setAlert} setMessage={setMessage} setOpenDeleteModal={setOpenDeleteModal}/>
         }
         handleClose={handleCloseDeleteModal}
         maxWidth="xs"

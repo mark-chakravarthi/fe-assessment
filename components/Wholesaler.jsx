@@ -129,6 +129,7 @@ const Wholesaler = () => {
               isLastPage={isLastPage}
               setIsLastPage={setIsLastPage}
               page={page}
+              setOpenFilterModal={setOpenFilterModal}
             />
           }
           handleClose={handleCloseFilterModal}
