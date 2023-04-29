@@ -1,4 +1,12 @@
-import { Grid, Typography, Button, Divider, IconButton } from "@mui/material";
+import {
+  Grid,
+  Typography,
+  Button,
+  Divider,
+  IconButton,
+  BottomNavigation,
+  Paper
+} from "@mui/material";
 import Image from "next/image";
 import filter from "../images/filter.png";
 import DisplayTable from "./DisplayTable";
@@ -10,15 +18,17 @@ import FilterForm from "./FilterForm";
 import Alert from "@mui/material/Alert";
 import Collapse from "@mui/material/Collapse";
 import CloseIcon from "@mui/icons-material/Close";
+import FilterTable from "./FilterTable";
 
 const Wholesaler = () => {
   const [openAddModal, setOpenAddModal] = useState(false);
   const [openFilterModal, setOpenFilterModal] = useState(false);
   const [page, setPage] = useState(1);
   const [wholesalerDetails, setWholesalerDetails] = useState([]);
-  const [isLastPage, setIsLastPage] = useState(false);
   const [alert, setAlert] = useState(false);
   const [message, setMessage] = useState("");
+  const [table, setTable] = useState("");
+  const [filterDetails, setFilterDetails] = useState(null);
 
   function handleCloseAddModal() {
     setOpenAddModal(false);
@@ -94,21 +104,37 @@ const Wholesaler = () => {
         </Grid>
         <Divider />
         <Grid item>
-          <DisplayTable
-            page={page}
-            wholesalerDetails={wholesalerDetails}
-            setWholesalerDetails={setWholesalerDetails}
-            setAlert={setAlert}
-            setMessage={setMessage}
-            openAddModal={openAddModal}
-          />
+          {table === "filter" ? (
+            <FilterTable
+              page={page}
+              wholesalerDetails={wholesalerDetails}
+              setWholesalerDetails={setWholesalerDetails}
+              setAlert={setAlert}
+              setMessage={setMessage}
+              openFilterModal={openFilterModal}
+              table={table}
+              filterDetails={filterDetails}
+            />
+          ) : (
+            <DisplayTable
+              page={page}
+              wholesalerDetails={wholesalerDetails}
+              setWholesalerDetails={setWholesalerDetails}
+              setAlert={setAlert}
+              setMessage={setMessage}
+              openAddModal={openAddModal}
+              table={table}
+            />
+          )}
         </Grid>
-        <DisplayPagination
-          page={page}
-          setPage={setPage}
-          isLastPage={isLastPage}
-          setIsLastPage={setIsLastPage}
-        />
+        {/* <Paper
+          sx={{ position: "fixed", bottom: 0, left: 0, right: 0,width:'inherit'}}
+          elevation={2}
+        >
+          <BottomNavigation sx={{ width: 500 }}> */}
+            <DisplayPagination page={page} setPage={setPage} />
+          {/* </BottomNavigation>
+        </Paper> */}
         <DialogModal
           open={openAddModal}
           children={
@@ -119,7 +145,7 @@ const Wholesaler = () => {
             />
           }
           handleClose={handleCloseAddModal}
-          onClose={()=>setOpenAddModal(false)}
+          onClose={() => setOpenAddModal(false)}
         />
         <DialogModal
           open={openFilterModal}
@@ -127,10 +153,11 @@ const Wholesaler = () => {
             <FilterForm
               wholesalerDetails={wholesalerDetails}
               setWholesalerDetails={setWholesalerDetails}
-              isLastPage={isLastPage}
-              setIsLastPage={setIsLastPage}
               page={page}
               setOpenFilterModal={setOpenFilterModal}
+              setTable={setTable}
+              filterDetails={filterDetails}
+              setFilterDetails={setFilterDetails}
             />
           }
           handleClose={handleCloseFilterModal}

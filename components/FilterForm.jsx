@@ -1,5 +1,12 @@
 // import { Padding } from "@mui/icons-material";
-import { Button, TextField, Grid, Typography, Divider,DialogActions } from "@mui/material";
+import {
+  Button,
+  TextField,
+  Grid,
+  Typography,
+  Divider,
+  DialogActions,
+} from "@mui/material";
 import { useState } from "react";
 import { AxiosInstance } from "@/axios/ConfigAxios";
 
@@ -10,25 +17,26 @@ const FilterForm = (props) => {
   const [phoneNo, setPhoneNo] = useState("");
   const [wId, setWid] = useState("");
   const setWholesalerDetails = props.setWholesalerDetails;
-  const setIsLastPage = props.setIsLastPage;
-  const setOpenFilterModal=props.setOpenFilterModal;
-  // const isLastPage=props.isLastPage;
-  const filterDetails = {
-    firstName: fname,
-    lastName: lname,
-    emailId: email,
-    phoneNo: phoneNo,
-    wholeSalerId: wId,
-  };
+  const setOpenFilterModal = props.setOpenFilterModal;
+  const setTable = props.setTable;
+  const filterDetails = props.filterDetails;
+  const setFilterDetails = props.setFilterDetails;
 
   async function handleFilter() {
     setOpenFilterModal(false);
+    setTable("filter");
+    setFilterDetails({
+      firstName: fname,
+      lastName: lname,
+      emailId: email,
+      phoneNo: phoneNo,
+      wholeSalerId: wId,
+    });
     AxiosInstance.get(`filter?pageNo=${props.page - 1}&pageSize=5`, {
       params: filterDetails,
     })
       .then((response) => {
         // Handle response
-        setIsLastPage(response.data.lastPage);
         setWholesalerDetails(response.data.pageList);
         console.log(response.data, "");
       })
@@ -39,6 +47,8 @@ const FilterForm = (props) => {
   }
 
   function handleClear() {
+    setOpenFilterModal(false);
+    setTable("get");
     setFname("");
     setLname("");
     setEmail("");

@@ -15,7 +15,7 @@ import EditForm from "./EditForm";
 import DeleteForm from "./DeleteForm";
 import { AxiosInstance } from "@/axios/ConfigAxios";
 
-const DisplayTable = (props) => {
+const FilterTable = (props) => {
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [dId, setDId] = useState(undefined);
@@ -24,18 +24,19 @@ const DisplayTable = (props) => {
   );
   const setAlert = props.setAlert;
   const setMessage = props.setMessage;
-
-  const openAddModal = props.openAddModal;
+  const filterDetails = props.filterDetails;
+  const openFilterModal = props.openFilterModal;
   const wholesalerDetails = props.wholesalerDetails;
   const setWholesalerDetails = props.setWholesalerDetails;
-  const table = props.table;
 
-  async function getWholesalerDetails(page) {
-    AxiosInstance.get(`WholeSellers?pageNo=${page - 1}&pageSize=5`)
+  async function filterWholesalerDetails(page) {
+    AxiosInstance.get(`filter?pageNo=${page - 1}&pageSize=5`, {
+      params: filterDetails,
+    })
       .then((response) => {
         // Handle response
-        console.log(response.data.content);
         setWholesalerDetails(response.data.content);
+        console.log(response.data, "fliter");
       })
       .catch((err) => {
         // Handle errors
@@ -46,19 +47,16 @@ const DisplayTable = (props) => {
   useEffect(() => {
     let flag = true;
     if (flag) {
-      if (
-        !openAddModal ||
-        !openEditModal ||
-        (!openDeleteModal && table === "get")
-      ) {
-        getWholesalerDetails(props.page);
+        console.log(props.page,'in filter table');
+      if (!openFilterModal || !openEditModal || !openDeleteModal) {
+        filterWholesalerDetails(props.page);
       }
     }
     return () => {
       // cancel the subscription
       flag = false;
     };
-  }, [props.page, openAddModal, openEditModal, openDeleteModal]);
+  }, [props.page, openFilterModal, openEditModal, openDeleteModal]);
 
   useEffect(() => {
     let flag = true;
@@ -204,4 +202,4 @@ const DisplayTable = (props) => {
   );
 };
 
-export default DisplayTable;
+export default FilterTable;
