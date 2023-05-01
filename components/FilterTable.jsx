@@ -25,9 +25,13 @@ const FilterTable = (props) => {
   const setAlert = props.setAlert;
   const setMessage = props.setMessage;
   const filterDetails = props.filterDetails;
+  const setFilterDetails = props.setFilterDetails;
+
   const openFilterModal = props.openFilterModal;
   const wholesalerDetails = props.wholesalerDetails;
   const setWholesalerDetails = props.setWholesalerDetails;
+  const table = props.table;
+  
 
   async function filterWholesalerDetails(page) {
     AxiosInstance.get(`filter?pageNo=${page - 1}&pageSize=5`, {
@@ -36,7 +40,7 @@ const FilterTable = (props) => {
       .then((response) => {
         // Handle response
         setWholesalerDetails(response.data.content);
-        console.log(response.data, "fliter");
+        
       })
       .catch((err) => {
         // Handle errors
@@ -47,7 +51,6 @@ const FilterTable = (props) => {
   useEffect(() => {
     let flag = true;
     if (flag) {
-        console.log(props.page,'in filter table');
       if (!openFilterModal || !openEditModal || !openDeleteModal) {
         filterWholesalerDetails(props.page);
       }
@@ -58,20 +61,20 @@ const FilterTable = (props) => {
     };
   }, [props.page, openFilterModal, openEditModal, openDeleteModal]);
 
-  useEffect(() => {
-    let flag = true;
-    if (flag) {
-      if (dId !== undefined && openDeleteModal === false) {
-        setOpenDeleteModal(true);
-      } else {
-        setOpenDeleteModal(false);
-      }
-    }
-    return () => {
-      // cancel the subscription
-      flag = false;
-    };
-  }, [dId]);
+  // useEffect(() => {
+  //   let flag = true;
+  //   if (flag) {
+  //     if (dId !== undefined && openDeleteModal === false) {
+  //       setOpenDeleteModal(true);
+  //     } else {
+  //       setOpenDeleteModal(false);
+  //     }
+  //   }
+  //   return () => {
+  //     // cancel the subscription
+  //     flag = false;
+  //   };
+  // }, [dId]);
 
   useEffect(() => {
     let flag = true;
@@ -87,7 +90,6 @@ const FilterTable = (props) => {
       flag = false;
     };
   }, [wholesalerDetailForEdit]);
-  console.log(wholesalerDetails);
 
   function handleCloseEditModal() {
     setOpenEditModal(false);
@@ -109,7 +111,6 @@ const FilterTable = (props) => {
       role: role,
       locId: locId,
     };
-    console.log("edetails", existingDetails);
     setWholesalerDetailForEdit(existingDetails);
   }
   return (
@@ -180,6 +181,9 @@ const FilterTable = (props) => {
             setAlert={setAlert}
             setMessage={setMessage}
             setOpenEditModal={setOpenEditModal}
+            filterDetails={filterDetails}
+            setFilterDetails={setFilterDetails}
+            table={table}
           />
         }
         handleClose={handleCloseEditModal}

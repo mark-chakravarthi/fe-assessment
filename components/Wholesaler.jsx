@@ -27,7 +27,7 @@ const Wholesaler = () => {
   const [wholesalerDetails, setWholesalerDetails] = useState([]);
   const [alert, setAlert] = useState(false);
   const [message, setMessage] = useState("");
-  const [table, setTable] = useState("");
+  const [table, setTable] = useState("get");
   const [filterDetails, setFilterDetails] = useState(null);
 
   function handleCloseAddModal() {
@@ -114,6 +114,7 @@ const Wholesaler = () => {
               openFilterModal={openFilterModal}
               table={table}
               filterDetails={filterDetails}
+              setFilterDetails={setFilterDetails}
             />
           ) : (
             <DisplayTable
@@ -129,7 +130,7 @@ const Wholesaler = () => {
         </Grid>
         <Paper sx={{ position: "fixed", bottom: 0, left: 288, right: 0 }}>
           <BottomNavigation sx={{alignItems:'center'}}>
-            <DisplayPagination page={page} setPage={setPage} />
+            <DisplayPagination page={page} setPage={setPage} table={table}/>
           </BottomNavigation>
         </Paper>
         <DialogModal

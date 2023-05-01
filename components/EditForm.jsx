@@ -31,6 +31,9 @@ const EditForm = (props) => {
   const setAlert = props.setAlert;
   const setMessage = props.setMessage;
   const setOpenEditModal = props.setOpenEditModal;
+  const filterDetails = props.filterDetails;
+  const setFilterDetails = props.setFilterDetails;
+  const table = props.table;
 
   const wholesalerDetail = {
     firstName: fname,
@@ -41,14 +44,22 @@ const EditForm = (props) => {
     role: role,
     locId: locId,
   };
-  async function handleUpdate() {
-    setOpenEditModal(false);
+  async function putRequest() {
     const res = await AxiosInstance.put(`${wDetails.wId}`, wholesalerDetail);
     if (res.status === 200) {
+      if (table === "filter") {
+        setFilterDetails({ ...filterDetails}  );
+      }
       setAlert(true);
       setMessage("Successfully Updated!");
     }
   }
+
+  function handleUpdate() {
+    setOpenEditModal(false);
+    putRequest();
+  }
+
   return (
     <form>
       <Typography

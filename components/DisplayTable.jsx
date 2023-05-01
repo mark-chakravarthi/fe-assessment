@@ -31,10 +31,12 @@ const DisplayTable = (props) => {
   const table = props.table;
 
   async function getWholesalerDetails(page) {
-    AxiosInstance.get(`WholeSellers?pageNo=${page - 1}&pageSize=5`)
+    AxiosInstance.get(
+      `WholeSellers?pageNo=${page - 1}&pageSize=5&sortBy=firstName`
+    )
       .then((response) => {
         // Handle response
-        console.log(response.data.content);
+        // console.log(response.data.content);
         setWholesalerDetails(response.data.content);
       })
       .catch((err) => {
@@ -47,9 +49,8 @@ const DisplayTable = (props) => {
     let flag = true;
     if (flag) {
       if (
-        !openAddModal ||
-        !openEditModal ||
-        (!openDeleteModal && table === "get")
+        !openAddModal || !openEditModal || !openDeleteModal &&
+        table === "get"
       ) {
         getWholesalerDetails(props.page);
       }
@@ -60,20 +61,20 @@ const DisplayTable = (props) => {
     };
   }, [props.page, openAddModal, openEditModal, openDeleteModal]);
 
-  useEffect(() => {
-    let flag = true;
-    if (flag) {
-      if (dId !== undefined && openDeleteModal === false) {
-        setOpenDeleteModal(true);
-      } else {
-        setOpenDeleteModal(false);
-      }
-    }
-    return () => {
-      // cancel the subscription
-      flag = false;
-    };
-  }, [dId]);
+  // useEffect(() => {
+  //   let flag = true;
+  //   if (flag) {
+  //     if (dId !== undefined && openDeleteModal === false) {
+  //       setOpenDeleteModal(true);
+  //     } else {
+  //       setOpenDeleteModal(false);
+  //     }
+  //   }
+  //   return () => {
+  //     // cancel the subscription
+  //     flag = false;
+  //   };
+  // }, [dId]);
 
   useEffect(() => {
     let flag = true;
@@ -89,7 +90,6 @@ const DisplayTable = (props) => {
       flag = false;
     };
   }, [wholesalerDetailForEdit]);
-  console.log(wholesalerDetails);
 
   function handleCloseEditModal() {
     setOpenEditModal(false);
@@ -111,7 +111,6 @@ const DisplayTable = (props) => {
       role: role,
       locId: locId,
     };
-    console.log("edetails", existingDetails);
     setWholesalerDetailForEdit(existingDetails);
   }
   return (

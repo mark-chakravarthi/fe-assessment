@@ -52,8 +52,6 @@ const AddForm = (props) => {
       if (res.status == 200) {
         setAlert(true);
         setMessage("Successfully Added Wholesaler");
-        // setIsDisabled(false);
-        // clearInterval(timer);
       }
     } catch (e) {
       console.log(e);
