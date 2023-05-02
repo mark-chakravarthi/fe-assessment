@@ -6,6 +6,7 @@ import {
   IconButton,
   BottomNavigation,
   Paper,
+  Snackbar,
 } from "@mui/material";
 import Image from "next/image";
 import filter from "../images/filter.png";
@@ -39,11 +40,16 @@ const Wholesaler = () => {
 
   return (
     <>
-      <Collapse in={alert}>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        open={alert}
+        autoHideDuration={3000}
+        onClose={() => setAlert(false)}
+      >
         <Alert
           variant="filled"
           severity="success"
-          width="120%"
+          style={{ width: "70%" }}
           action={
             <IconButton
               aria-label="close"
@@ -60,9 +66,13 @@ const Wholesaler = () => {
         >
           {message}
         </Alert>
-      </Collapse>
-      <Grid container sx={{ marginTop: 2,marginLeft:5,marginRight:5 }} rowSpacing={4}>
-        <Grid item xs={8}>
+      </Snackbar>
+      <Grid
+        container
+        sx={{ marginTop: 0, marginLeft: 5, marginRight: 5 }}
+        rowSpacing={4}
+      >
+        <Grid item xs={9}>
           <Typography
             variant="subtitle1"
             sx={{
@@ -76,8 +86,7 @@ const Wholesaler = () => {
             Wholesalers
           </Typography>
         </Grid>
-
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           <Grid container>
             <Grid item xs={4}>
               <Button
@@ -89,7 +98,8 @@ const Wholesaler = () => {
                 Add
               </Button>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={1}></Grid>
+            <Grid item xs={7}>
               <Button
                 variant="contained"
                 color="primary"
@@ -102,7 +112,15 @@ const Wholesaler = () => {
             </Grid>
           </Grid>
         </Grid>
-        <Divider />
+        <hr
+          style={{
+            position: "relative",
+            width: "960px",
+            left: "-30px",
+            top: "30px",
+            border: "0.5px solid #CACACA",
+          }}
+        />{" "}
         <Grid item>
           {table === "filter" ? (
             <FilterTable
@@ -129,8 +147,8 @@ const Wholesaler = () => {
           )}
         </Grid>
         <Paper sx={{ position: "fixed", bottom: 0, left: 288, right: 0 }}>
-          <BottomNavigation sx={{alignItems:'center'}}>
-            <DisplayPagination page={page} setPage={setPage} table={table}/>
+          <BottomNavigation sx={{ alignItems: "center" }}>
+            <DisplayPagination page={page} setPage={setPage} table={table} />
           </BottomNavigation>
         </Paper>
         <DialogModal

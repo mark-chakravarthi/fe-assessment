@@ -11,7 +11,7 @@ export const schema = Yup.object().shape({
     .label("LastName"),
   EmailId: Yup.string()
     .required()
-    .matches(/^[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,3}$/, "Enter a valid Email Id")
+    .matches(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, "Enter a valid Email Id")
     .label("EmailId"),
   PhoneNo: Yup.string()
     .required()

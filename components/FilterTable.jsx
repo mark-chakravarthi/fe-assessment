@@ -31,7 +31,6 @@ const FilterTable = (props) => {
   const wholesalerDetails = props.wholesalerDetails;
   const setWholesalerDetails = props.setWholesalerDetails;
   const table = props.table;
-  
 
   async function filterWholesalerDetails(page) {
     AxiosInstance.get(`filter?pageNo=${page - 1}&pageSize=5`, {
@@ -40,7 +39,6 @@ const FilterTable = (props) => {
       .then((response) => {
         // Handle response
         setWholesalerDetails(response.data.content);
-        
       })
       .catch((err) => {
         // Handle errors
@@ -115,16 +113,35 @@ const FilterTable = (props) => {
   }
   return (
     <>
-      <TableContainer component={Paper} sx={{ width: "120%" }}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+      <TableContainer sx={{ width: "120%" }}>
+        <Table
+          sx={{
+            minWidth: 800,
+            borderCollapse: "separate",
+            borderSpacing: "0px 10px",
+          }}
+          aria-label="simple table"
+        >
           <TableHead>
             <TableRow>
-              <TableCell align="left">First Name</TableCell>
-              <TableCell align="left">Last Name</TableCell>
-              <TableCell align="left">Email ID</TableCell>
-              <TableCell align="left">Phone Number</TableCell>
-              <TableCell align="left">Wholesaler ID</TableCell>
-              <TableCell align="center">Actions</TableCell>
+              <TableCell style={{ borderBottom: "none" }} align="left">
+                First Name
+              </TableCell>
+              <TableCell style={{ borderBottom: "none" }} align="left">
+                Last Name
+              </TableCell>
+              <TableCell style={{ borderBottom: "none" }} align="left">
+                Email ID
+              </TableCell>
+              <TableCell style={{ borderBottom: "none" }} align="left">
+                Phone Number
+              </TableCell>
+              <TableCell style={{ borderBottom: "none" }} align="left">
+                Wholesaler ID
+              </TableCell>
+              <TableCell style={{ borderBottom: "none" }} align="center">
+                Actions
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -132,11 +149,9 @@ const FilterTable = (props) => {
               ? wholesalerDetails.map((row) => (
                   <TableRow
                     key={row.wid}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    sx={{ backgroundColor: "#F0EFFF", "& td": { border: 0 } }}
                   >
-                    <TableCell component="th" scope="row">
-                      {row.firstName}
-                    </TableCell>
+                    <TableCell>{row.firstName}</TableCell>
                     <TableCell align="left">{row.lastName}</TableCell>
                     <TableCell align="left">{row.emailId}</TableCell>
                     <TableCell align="left">{row.phoneNo}</TableCell>

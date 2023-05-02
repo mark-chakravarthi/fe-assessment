@@ -15,6 +15,8 @@ import EditForm from "./EditForm";
 import DeleteForm from "./DeleteForm";
 import { AxiosInstance } from "@/axios/ConfigAxios";
 
+
+
 const DisplayTable = (props) => {
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
@@ -49,8 +51,9 @@ const DisplayTable = (props) => {
     let flag = true;
     if (flag) {
       if (
-        !openAddModal || !openEditModal || !openDeleteModal &&
-        table === "get"
+        !openAddModal ||
+        !openEditModal ||
+        (!openDeleteModal && table === "get")
       ) {
         getWholesalerDetails(props.page);
       }
@@ -115,57 +118,83 @@ const DisplayTable = (props) => {
   }
   return (
     <>
-      <TableContainer component={Paper} sx={{ width: "120%" }}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+      <TableContainer sx={{ width: "120%" }}>
+        <Table
+          sx={{
+            minWidth: 800,
+            borderCollapse: "separate",
+            borderSpacing: "0px 10px",
+          }}
+          aria-label="simple table"
+        >
           <TableHead>
-            <TableRow>
-              <TableCell align="left">First Name</TableCell>
-              <TableCell align="left">Last Name</TableCell>
-              <TableCell align="left">Email ID</TableCell>
-              <TableCell align="left">Phone Number</TableCell>
-              <TableCell align="left">Wholesaler ID</TableCell>
-              <TableCell align="center">Actions</TableCell>
+            <TableRow >
+              <TableCell style={{ borderBottom: "none" }} align="left">
+                First Name
+              </TableCell>
+              <TableCell style={{ borderBottom: "none" }} align="left">
+                Last Name
+              </TableCell>
+              <TableCell style={{ borderBottom: "none" }} align="left">
+                Email ID
+              </TableCell>
+              <TableCell style={{ borderBottom: "none" }} align="left">
+                Phone Number
+              </TableCell>
+              <TableCell style={{ borderBottom: "none" }} align="left">
+                Wholesaler ID
+              </TableCell>
+              <TableCell style={{ borderBottom: "none" }} align="center">
+                Actions
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {Array.isArray(wholesalerDetails)
               ? wholesalerDetails.map((row) => (
-                  <TableRow
-                    key={row.wid}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {row.firstName}
-                    </TableCell>
-                    <TableCell align="left">{row.lastName}</TableCell>
-                    <TableCell align="left">{row.emailId}</TableCell>
-                    <TableCell align="left">{row.phoneNo}</TableCell>
-                    <TableCell align="left">{row.wholeSalerId}</TableCell>
-                    <TableCell align="center">
-                      <Button
-                        onClick={() =>
-                          handleEdit(
-                            row.firstName,
-                            row.lastName,
-                            row.emailId,
-                            row.phoneNo,
-                            row.wholeSalerId,
-                            row.role,
-                            row.locId
-                          )
-                        }
+                    <TableRow
+                      key={row.wid}
+                      sx={{
+                        backgroundColor: "#F0EFFF",
+                        "& td": { border: 0 },
+                      }}
+                    >
+                      <TableCell
+                        // component="th"
+                        // scope="row"
+                        // style={{ borderBottom: "none" }}
                       >
-                        <Image src={editicon} />
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          handleDelete(row.wholeSalerId);
-                        }}
-                      >
-                        <Image src={deleteicon} />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
+                        {row.firstName}
+                      </TableCell>
+                      <TableCell align="left">{row.lastName}</TableCell>
+                      <TableCell align="left">{row.emailId}</TableCell>
+                      <TableCell align="left">{row.phoneNo}</TableCell>
+                      <TableCell align="left">{row.wholeSalerId}</TableCell>
+                      <TableCell align="center">
+                        <Button
+                          onClick={() =>
+                            handleEdit(
+                              row.firstName,
+                              row.lastName,
+                              row.emailId,
+                              row.phoneNo,
+                              row.wholeSalerId,
+                              row.role,
+                              row.locId
+                            )
+                          }
+                        >
+                          <Image src={editicon} />
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            handleDelete(row.wholeSalerId);
+                          }}
+                        >
+                          <Image src={deleteicon} />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
                 ))
               : null}
           </TableBody>

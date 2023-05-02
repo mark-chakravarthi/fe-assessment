@@ -69,10 +69,10 @@ const AddForm = (props) => {
   function handleSubmit(e) {
     e.preventDefault();
     setIsDisabled(true);
+    postDetails();
     setTimeout(() => {
       setIsDisabled(false);
     }, 1000);
-    postDetails();
   }
   return (
     <form>

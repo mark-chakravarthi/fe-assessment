@@ -28,6 +28,9 @@ const EditForm = (props) => {
   const [phoneNo, setPhoneNo] = useState(wDetails.pno);
   const [locId, setlocId] = useState(wDetails.locId);
   const [role, setRole] = useState(wDetails.role);
+  const [nullAlert, setNullAlert] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(false);
+
   const setAlert = props.setAlert;
   const setMessage = props.setMessage;
   const setOpenEditModal = props.setOpenEditModal;
@@ -45,19 +48,30 @@ const EditForm = (props) => {
     locId: locId,
   };
   async function putRequest() {
-    const res = await AxiosInstance.put(`${wDetails.wId}`, wholesalerDetail);
-    if (res.status === 200) {
-      if (table === "filter") {
-        setFilterDetails({ ...filterDetails}  );
+    try {
+      const res = await AxiosInstance.put(`${wDetails.wId}`, wholesalerDetail);
+      if (res.status === 200) {
+        if (table === "filter") {
+          setFilterDetails({ ...filterDetails });
+        }
+        setOpenEditModal(false);
+        setAlert(true);
+        setMessage("Successfully Updated!");
       }
-      setAlert(true);
-      setMessage("Successfully Updated!");
+    } catch (e) {
+      console.log(e);
+      if (e.response.status === 400) {
+        setNullAlert(true);
+      }
     }
   }
 
   function handleUpdate() {
-    setOpenEditModal(false);
+    setIsDisabled(true);
     putRequest();
+    setTimeout(() => {
+      setIsDisabled(false);
+    }, 1000);
   }
 
   return (
@@ -153,10 +167,21 @@ const EditForm = (props) => {
             onChange={(e) => setlocId(e.target.value)}
           />
         </Grid>
-
+        {nullAlert && (
+          <Grid item xs={12}>
+            <p style={{ color: "red", fontFamily: "monospace" }}>
+              Enter valid Details!
+            </p>
+          </Grid>
+        )}
         <DialogActions>
           <div>
-            <Button variant="contained" color="primary" onClick={handleUpdate}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleUpdate}
+              disabled={isDisabled}
+            >
               Update
             </Button>
           </div>

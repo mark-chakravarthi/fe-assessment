@@ -17,6 +17,8 @@ const Sidebar = () => {
       <div
         style={{
           border: "3px solid rgba(77, 71, 195, 0.08)",
+          borderTop:"none",
+          borderBottom:"none",
           width: 282,
           height: 555,
         }}
