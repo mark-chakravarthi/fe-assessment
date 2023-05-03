@@ -1,31 +1,38 @@
 import { useState } from 'react';
-import { TextField, Button, Grid , Typography, Divider} from '@mui/material';
+import { TextField , Button, Grid , Typography, Divider , InputLabel} from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { useEffect } from 'react';
+import dayjs from 'dayjs';
+import FormHelperText from '@material-ui/core/FormHelperText';
 
 const RoleForm = (props) => {
 
-  // role form fields
   const [roleName, setRoleName] = useState('');
   const [organizationName, setOrganizationName] = useState('');
   const [roleId, setRoleId] = useState('');
-  const [selectedDate, setSelectedDate] = useState();
+  const [selectedDate, setSelectedDate] = useState(null);
   const [roleState, setRoleState] = useState('');
 
-  // is it update or add to control modal
+  // update mode on
   const [isUpdateState, setIsUpdateState] = useState(false);
 
-  // which item is getting updated 
+  // item being updated
   const [isUpdateId, setIsUpdateId] = useState('');
 
-  // role id valid invalid state
+  // role id valid or invalid
   const [isvalidId, setisvalidId] = useState(true);
+  const [isvalidRoleName, setisvalidRoleName] = useState(true);
+  const [isvalidOrgName, setisvalidOrgName] = useState(true);
 
-  async function postData(){
 
-    // post request
-    const res = await fetch(`${process.env.BASE_URL}/roles`, {
+
+  async function postData() {
+  
+        const res = await fetch(`${process.env.BASE_URL}/roles`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -33,29 +40,38 @@ const RoleForm = (props) => {
         body: JSON.stringify({
         "roleName": roleName,
         "orgName": organizationName,
-        "createdDate": selectedDate,
+        "createdDate": dayjs(selectedDate).format('YYYY-MM-DD').toString(),
         "roleState":roleState,
         "roleId": roleId
         })
-      });
+      })
+      
+      .then((response) => response.json())
 
-      if (res.ok) {
-        alert('Added successfully!');
-        setRoleName('');
-        setOrganizationName('');
-        setSelectedDate('');
-        setRoleState('');
-        setRoleId('');
-        props.handleClose();
-        location.reload(false);
-      } else {
-        alert('Something went wrong. Please try again later.');
-      }
+      .then((data) => {
+
+        if(data.statusCode === 404 && data.message === "Role Already Exists"){
+          alert(data.message)
+        }
+
+        else {
+          alert('Added Successfully')
+          setRoleName('');
+          setOrganizationName('');
+          setSelectedDate('');
+          setRoleState('');
+          setRoleId('');
+          setIsUpdateState(false)
+          props.handleClose();
+          location.reload(false);
+        }
+          
+      });     
   }
 
 
-  // update request
-   async function putItemData(roleId){
+   async function putItemData(roleId) {
+
     const res = await fetch(`${process.env.BASE_URL}/roles/${roleId}`, {
         method: 'PUT',
         headers: {
@@ -64,42 +80,49 @@ const RoleForm = (props) => {
         body: JSON.stringify({
             "roleName": roleName,
             "orgName": organizationName,
-            "createdDate": selectedDate,
+            "createdDate": dayjs(selectedDate).format('YYYY-MM-DD').toString(),
             "roleState":roleState,
             "roleId": roleId,
-            // "id": isUpdateId
+            
             })
       })
+      
+      .then((response) => response.json())
 
-      if (res.ok) {
-        alert('Data Updated successfully!');
-        setRoleName('');
-        setOrganizationName('');
-        setSelectedDate('');
-        setRoleState('');
-        setRoleId('');
-        setIsUpdateState(false)
-        props.handleClose();
-        location.reload(false);
-      } else {
-        alert('Something went wrong. Please try again later.');
-      }
+      .then((data) => {
+
+        if(data.statusCode === 404 && data.message === " New Date Provide Is Incorrect ") {
+          alert(data.message)
+        }
+        
+        else if (data.statusCode === 200 && data.message === "Updated Successfully") {
+          alert(data.message);
+          setRoleName('');
+          setOrganizationName('');
+          setSelectedDate('');
+          setRoleState('');
+          setRoleId('');
+          setIsUpdateState(false)
+          props.handleClose();
+          location.reload(false);
+        }
+        
+      });
   }
 
 
-  // get item by id for update fields
   function getItemData(id){
     fetch(`${process.env.BASE_URL}/roles/${id}`)
-        .then((res) => res.json())
-        .then((data) => {
-        setRoleName(data.roleName);
-        setOrganizationName(data.orgName);
-        setSelectedDate(data.createdDate);
-        setRoleState(data.roleState);
-        setRoleId(data.roleId);
-        setIsUpdateState(true);
-        setIsUpdateId(data.roleId);
-        });
+    .then((res) => res.json())
+    .then((data) => {
+      setRoleName(data.roleName);
+      setOrganizationName(data.orgName);
+      setSelectedDate(dayjs(new Date(data.createdDate)));
+      setRoleState(data.roleState);
+      setRoleId(data.roleId);
+      setIsUpdateState(true);
+      setIsUpdateId(data.roleId);
+    });
   }
 
   useEffect(() => {
@@ -110,16 +133,14 @@ const RoleForm = (props) => {
     
   }, []);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
 
-    if(!isUpdateState && isvalidId)
-        postData();
-    else if(isUpdateState && isvalidId)
-        putItemData(isUpdateId)
+    const handleSubmit = async (event) => {
+        event.preventDefault();
 
-    else 
-        alert('Please enter valid role ID');
+        if (!isUpdateState && isvalidId && isvalidRoleName && isvalidOrgName)
+            postData();
+        if (isUpdateState && isvalidId && isvalidRoleName && isvalidOrgName)
+            putItemData(isUpdateId)
     };
 
     // test whether role id is valid
@@ -130,9 +151,21 @@ const RoleForm = (props) => {
         setisvalidId(reg.test(e.target.value));
     }
 
+    const handleRoleName = (e) =>{
+      setRoleName(e.target.value)
+      const reg = new RegExp("^([a-zA-Z_$][a-zA-Z\\d_$]*)$");
+      setisvalidRoleName(reg.test(e.target.value));
+    }
+
+    const handleOrgName = (e) =>{
+      setOrganizationName(e.target.value)
+      const reg = new RegExp("^([a-zA-Z_$][a-zA-Z\\d_$]*)$");
+      setisvalidOrgName(reg.test(e.target.value));
+  }
+
   return (
 
-    <form  onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit}>
 
       <Grid
           container
@@ -144,16 +177,16 @@ const RoleForm = (props) => {
           }}
       >
 
-        <Grid item xs={9}>
+        <Grid item xs={10}>
             <Typography variant="h6" sx={{ marginLeft: 3, color: "black" }}>
             {
-                isUpdateState && "Update" ||  "Add"
+                isUpdateState && "Edit Role" ||  "Add Role"
             }
             </Typography>
         </Grid>
                     
-        <Grid item xs={3}>
-            <Button variant='outlined' color="error" sx={{ width:80}} onClick={props.handleClose}>
+        <Grid item xs={2}>
+            <Button variant='outlined' sx={{color:"#4D47C3" , width:80}} onClick={props.handleClose}>
                 Cancel
             </Button>
         </Grid>
@@ -163,55 +196,59 @@ const RoleForm = (props) => {
     <Divider />
 
 
-    <Grid container sx={{ margin: 3 }}>
+    <Grid container sx={{ margin: 2 }}>
         
-        <Grid item xs={3} sx={{ marginBottom: 3 }}>
+        <Grid item xs={4} sx={{ marginTop: 2 }}>
+        <InputLabel sx={{marginBottom : 1}}>Role Name</InputLabel>
             <TextField
                 variant="outlined"
-                label="Role Name"
-                sx={{ Padding: 5 }}
+                sx={{ width : 180 }}
                 value={roleName}
-                onChange={e=>{
-                  setRoleName(e.target.value)
-              }}
+                onChange={handleRoleName}
+                error={!isvalidRoleName}
               required
             />
+            {!isvalidRoleName && <FormHelperText>Special Characters not allowed</FormHelperText>}
         </Grid>
 
-        <Grid item xs={4} sx={{ marginBottom: 3 , marginLeft : 3 }}>
+        <Grid item xs={4} sx={{ marginTop: 2 }}>
+        <InputLabel sx={{marginBottom : 1}}>Organisation Name</InputLabel>
             <TextField
                 variant="outlined"
-                label="Organisation Name"
                 value={organizationName}
-                onChange={e=>{
-                  setOrganizationName(e.target.value)
-                
-              }}
+                onChange={handleOrgName}
                 required
+                sx={{ width : 180 }}
+                error={!isvalidOrgName}
             />
+            {!isvalidOrgName && <FormHelperText>Special Characters not allowed</FormHelperText>}
         </Grid>
 
-        <Grid item xs={3} sx={{ marginBottom: 3 , marginLeft : 3 }}>
-            <TextField
-                variant="outlined"
-                label="Created Date"
-                value={selectedDate}
-                onChange={e=>{
-                  setSelectedDate(e.target.value)
-                }}
-                required
-            />
-        </Grid>
+        <Grid item xs={4} sx={{ marginTop: 2 }}>
+        <InputLabel sx={{marginBottom : 1}}>Created Date</InputLabel>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  
+                  <DatePicker
+                    value={selectedDate}
+                    onChange={(newValue) => setSelectedDate(newValue)}
+                    disablePast={true}
+                    format="DD-MM-YYYY"
+                    sx={{ width: 158 }}
+                  />
+          </LocalizationProvider>
 
-        <Grid item xs={5} sx={{ marginBottom: 3 }}>
+          </Grid>
+        
+
+        <Grid item xs={4} sx={{ marginTop: 2 }}>
+        <InputLabel sx={{marginBottom : 1}}>Role State</InputLabel>
             <Select
                 value={roleState}
                 onChange={e=>{
                   setRoleState(e.target.value)
                 }}
-                label="Role State"
                 variant="outlined"
-                sx={{ width: 142 }}
+                sx={{ width: 180 }}
                 required
                 >
                 <MenuItem value={true}>active</MenuItem>
@@ -219,21 +256,24 @@ const RoleForm = (props) => {
             </Select>
         </Grid>
 
-        <Grid item xs={5} sx={{ marginBottom: 3 }}>
+        <Grid item xs={8} sx={{ marginTop: 2 }}>
+        <InputLabel sx={{marginBottom : 1}}>Role ID</InputLabel>
             <TextField
                 variant="outlined"
-                label="Role Id"
                 value={roleId}
                 onChange={handleroleId}
                 error={!isvalidId}
                 required
+                disabled={isUpdateState}
+                sx={{ width: 180 }}
             />
+            {!isvalidId && <FormHelperText>Please enter valid role ID</FormHelperText>}
         </Grid>
 
         <div>
-            <Button type="submit" variant='contained' sx={{color:"#fff" , width:120}}>
+            <Button type="submit" variant='contained' sx={{color:"#fff" , width:120 , marginTop: 3}}>
             {
-                isUpdateState && "Update" ||  "ADD"
+                isUpdateState && "Update" ||  "Add"
             }
           </Button>
         </div>

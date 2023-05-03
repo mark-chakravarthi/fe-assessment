@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   env: {
-    BASE_URL: 'http://localhost:8082',
+    BASE_URL: 'http://localhost:8085',
   },
 }
 
