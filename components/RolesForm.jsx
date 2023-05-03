@@ -29,7 +29,6 @@ const RoleForm = (props) => {
   const [isvalidOrgName, setisvalidOrgName] = useState(true);
 
 
-
   async function postData() {
   
         const res = await fetch(`${process.env.BASE_URL}/roles`, {
@@ -50,8 +49,10 @@ const RoleForm = (props) => {
 
       .then((data) => {
 
-        if(data.statusCode === 404 && data.message === "Role Already Exists"){
-          alert(data.message)
+        console.log(data)
+
+        if(data.statusCode === 409 && data.message === "RoleId already exists"){
+          alert(data.message + ". Enter a unique role ID")
         }
 
         else {
@@ -91,7 +92,7 @@ const RoleForm = (props) => {
 
       .then((data) => {
 
-        if(data.statusCode === 404 && data.message === " New Date Provide Is Incorrect ") {
+        if(data.statusCode === 400 && data.message === "Selected Date is Invalid. Cannot enter date before Created Date.") {
           alert(data.message)
         }
         
@@ -153,13 +154,13 @@ const RoleForm = (props) => {
 
     const handleRoleName = (e) =>{
       setRoleName(e.target.value)
-      const reg = new RegExp("^([a-zA-Z_$][a-zA-Z\\d_$]*)$");
+      const reg = new RegExp("^[A-Za-z0-9]+$");
       setisvalidRoleName(reg.test(e.target.value));
     }
 
     const handleOrgName = (e) =>{
       setOrganizationName(e.target.value)
-      const reg = new RegExp("^([a-zA-Z_$][a-zA-Z\\d_$]*)$");
+      const reg = new RegExp("^[A-Za-z0-9]+$");
       setisvalidOrgName(reg.test(e.target.value));
   }
 

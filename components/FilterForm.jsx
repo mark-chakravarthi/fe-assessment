@@ -33,7 +33,6 @@ const FilterForm = (props) => {
 
     }
     
-    
     function handleClear() {
         setRname("");
         setOrgname("");
