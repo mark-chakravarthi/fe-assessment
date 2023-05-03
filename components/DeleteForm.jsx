@@ -5,7 +5,7 @@ import {
   Divider,
   DialogActions,
 } from "@mui/material";
-import { AxiosInstance } from "@/axios/ConfigAxios";
+import { axiosInstance } from "@/axios/ConfigAxios";
 
 const DeleteForm = (props) => {
   const setOpenDeleteModal = props.setOpenDeleteModal;
@@ -13,7 +13,7 @@ const DeleteForm = (props) => {
   const setMessage = props.setMessage;
 
   async function DeleteRequest() {
-    const res = await AxiosInstance.delete(`${props.wid}`);
+    const res = await axiosInstance.delete(`${props.wid}`);
     if (res.data.status === "ACCEPTED") {
       setAlert(true);
       setMessage(res.data.message);

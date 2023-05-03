@@ -13,7 +13,7 @@ const DisplayPagination = (props) => {
         <Grid item xs={1}></Grid>
         <Grid item xs={8}>
           <Pagination
-            count={10}
+            count={props.pages}
             page={props.page}
             color="primary"
             onChange={handleChange}

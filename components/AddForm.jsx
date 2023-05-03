@@ -9,7 +9,7 @@ import {
   DialogActions,
 } from "@mui/material";
 import { useState, useRef } from "react";
-import { AxiosInstance } from "@/axios/ConfigAxios";
+import { axiosInstance } from "@/axios/ConfigAxios";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { schema } from "../validations/Addval";
@@ -47,7 +47,7 @@ const AddForm = (props) => {
   const setOpenModal = props.setOpenModal;
   async function postDetails() {
     try {
-      const res = await AxiosInstance.post("WholeSellers", wholesalerDetail);
+      const res = await axiosInstance.post("WholeSellers", wholesalerDetail);
       setOpenModal(false);
       if (res.status == 200) {
         setAlert(true);
@@ -56,8 +56,14 @@ const AddForm = (props) => {
     } catch (e) {
       console.log(e);
       if (
-        e.response.data.statusCode === 404 &&
+        e.response.data.statusCode === 302 &&
         e.response.data.message === "This WholeSalerId Already Exists"
+      ) {
+        setAddAlert(true);
+      }
+      if (
+        e.response.data.statusCode === 302 &&
+        e.response.data.message === "This Phone Number Already exists"
       ) {
         setAddAlert(true);
       }
@@ -125,7 +131,11 @@ const AddForm = (props) => {
             name="PhoneNo"
             {...register("PhoneNo")}
             error={!!errors?.PhoneNo}
-            helperText={errors?.PhoneNo?.message}
+            helperText={
+              addAlert
+                ? "This Phone Number Already exists!"
+                : errors?.PhoneNo?.message
+            }
             onChange={(e) => setPhoneNo(e.target.value)}
           />
         </Grid>

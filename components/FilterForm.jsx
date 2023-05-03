@@ -1,4 +1,3 @@
-// import { Padding } from "@mui/icons-material";
 import {
   Button,
   TextField,
@@ -7,34 +6,27 @@ import {
   Divider,
   DialogActions,
 } from "@mui/material";
-import { useState } from "react";
-import { AxiosInstance } from "@/axios/ConfigAxios";
+import { axiosInstance } from "@/axios/ConfigAxios";
 
-const FilterForm = (props) => {
-  const [fname, setFname] = useState("");
-  const [lname, setLname] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneNo, setPhoneNo] = useState("");
-  const [wId, setWid] = useState("");
-  const setWholesalerDetails = props.setWholesalerDetails;
-  const setOpenFilterModal = props.setOpenFilterModal;
-  const setTable = props.setTable;
-  const filterDetails = props.filterDetails;
-  const setFilterDetails = props.setFilterDetails;
-
-  async function handleFilter() {
-    setOpenFilterModal(false);
+const FilterForm = ({
+  setWholesalerDetails,
+  setOpenFilterModal,
+  setTable,
+  filterDetails,
+  setFilterDetails,
+  page,
+}) => {
+  function handleFilter() {
     setTable("filter");
-    setFilterDetails({
-      firstName: fname,
-      lastName: lname,
-      emailId: email,
-      phoneNo: phoneNo,
-      wholeSalerId: wId,
-    });
-    AxiosInstance.get(`filter?pageNo=${props.page - 1}&pageSize=5`, {
-      params: filterDetails,
-    })
+    setOpenFilterModal(false);
+    filterRequest(filterDetails);
+  }
+
+  function filterRequest(filterDetails) {
+    axiosInstance
+      .get(`filter?pageNo=${page - 1}&pageSize=5`, {
+        params: filterDetails,
+      })
       .then((response) => {
         // Handle response
         setWholesalerDetails(response.data.pageList);
@@ -46,14 +38,21 @@ const FilterForm = (props) => {
       });
   }
 
+  function handleChange(e) {
+    console.log(e.target.name);
+    setFilterDetails({ ...filterDetails, [e.target.name]: e.target.value });
+  }
+
   function handleClear() {
     setOpenFilterModal(false);
     setTable("get");
-    setFname("");
-    setLname("");
-    setEmail("");
-    setPhoneNo("");
-    setWid("");
+    setFilterDetails({
+      firstName: "",
+      lastName: "",
+      emailId: "",
+      phoneNo: "",
+      wholeSalerId: "",
+    });
   }
   return (
     <form>
@@ -83,41 +82,46 @@ const FilterForm = (props) => {
           <TextField
             variant="outlined"
             label="FirstName"
+            name="firstName"
             sx={{ Padding: 5 }}
-            value={fname}
-            onChange={(e) => setFname(e.target.value)}
+            value={filterDetails.firstName}
+            onChange={(e) => handleChange(e)}
           />
         </Grid>
         <Grid item xs={6} sx={{ marginBottom: 3 }}>
           <TextField
             variant="outlined"
             label="LastName"
-            value={lname}
-            onChange={(e) => setLname(e.target.value)}
+            name="lastName"
+            value={filterDetails.lastName}
+            onChange={(e) => handleChange(e)}
           />
         </Grid>
         <Grid item xs={6} sx={{ marginBottom: 3 }}>
           <TextField
             variant="outlined"
             label="Email ID"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            name="emailId"
+            value={filterDetails.emailId}
+            onChange={(e) => handleChange(e)}
           />
         </Grid>
         <Grid item xs={6} sx={{ marginBottom: 3 }}>
           <TextField
             variant="outlined"
             label="Phone Number"
-            value={phoneNo}
-            onChange={(e) => setPhoneNo(e.target.value)}
+            name="phoneNo"
+            value={filterDetails.phoneNo}
+            onChange={(e) => handleChange(e)}
           />
         </Grid>
         <Grid item xs={12} sx={{ marginBottom: 3 }}>
           <TextField
             variant="outlined"
             label="Wholesaler Id"
-            value={wId}
-            onChange={(e) => setWid(e.target.value)}
+            name="wholeSalerId"
+            value={filterDetails.wholeSalerId}
+            onChange={(e) => handleChange(e)}
           />
         </Grid>
         <DialogActions>

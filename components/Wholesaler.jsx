@@ -2,7 +2,6 @@ import {
   Grid,
   Typography,
   Button,
-  Divider,
   IconButton,
   BottomNavigation,
   Paper,
@@ -10,16 +9,14 @@ import {
 } from "@mui/material";
 import Image from "next/image";
 import filter from "../images/filter.png";
-import DisplayTable from "./DisplayTable";
 import { useState } from "react";
 import DisplayPagination from "./DisplayPagination";
 import DialogModal from "./DialogModal";
 import AddForm from "./AddForm";
 import FilterForm from "./FilterForm";
 import Alert from "@mui/material/Alert";
-import Collapse from "@mui/material/Collapse";
 import CloseIcon from "@mui/icons-material/Close";
-import FilterTable from "./FilterTable";
+import MyTable from "./MyTable";
 
 const Wholesaler = () => {
   const [openAddModal, setOpenAddModal] = useState(false);
@@ -29,7 +26,14 @@ const Wholesaler = () => {
   const [alert, setAlert] = useState(false);
   const [message, setMessage] = useState("");
   const [table, setTable] = useState("get");
-  const [filterDetails, setFilterDetails] = useState(null);
+  const [filterDetails, setFilterDetails] = useState({
+    firstName: "",
+    lastName: "",
+    emailId: "",
+    phoneNo: "",
+    wholeSalerId: "",
+  });
+  const [pages, setPages] = useState(null);
 
   function handleCloseAddModal() {
     setOpenAddModal(false);
@@ -120,35 +124,25 @@ const Wholesaler = () => {
             top: "30px",
             border: "0.5px solid #CACACA",
           }}
-        />{" "}
+        />
         <Grid item>
-          {table === "filter" ? (
-            <FilterTable
-              page={page}
-              wholesalerDetails={wholesalerDetails}
-              setWholesalerDetails={setWholesalerDetails}
-              setAlert={setAlert}
-              setMessage={setMessage}
-              openFilterModal={openFilterModal}
-              table={table}
-              filterDetails={filterDetails}
-              setFilterDetails={setFilterDetails}
-            />
-          ) : (
-            <DisplayTable
-              page={page}
-              wholesalerDetails={wholesalerDetails}
-              setWholesalerDetails={setWholesalerDetails}
-              setAlert={setAlert}
-              setMessage={setMessage}
-              openAddModal={openAddModal}
-              table={table}
-            />
-          )}
+          <MyTable
+            page={page}
+            wholesalerDetails={wholesalerDetails}
+            setWholesalerDetails={setWholesalerDetails}
+            setAlert={setAlert}
+            setMessage={setMessage}
+            openFilterModal={openFilterModal}
+            table={table}
+            filterDetails={filterDetails}
+            setFilterDetails={setFilterDetails}
+            openAddModal={openAddModal}
+            setPages={setPages}
+          />
         </Grid>
         <Paper sx={{ position: "fixed", bottom: 0, left: 288, right: 0 }}>
           <BottomNavigation sx={{ alignItems: "center" }}>
-            <DisplayPagination page={page} setPage={setPage} table={table} />
+            <DisplayPagination page={page} setPage={setPage} pages={pages} />
           </BottomNavigation>
         </Paper>
         <DialogModal

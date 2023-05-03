@@ -9,7 +9,7 @@ import {
   DialogActions,
 } from "@mui/material";
 import { useState, useEffect } from "react";
-import { AxiosInstance } from "@/axios/ConfigAxios";
+import { axiosInstance } from "@/axios/ConfigAxios";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { schema } from "../validations/Editval";
@@ -29,6 +29,7 @@ const EditForm = (props) => {
   const [locId, setlocId] = useState(wDetails.locId);
   const [role, setRole] = useState(wDetails.role);
   const [nullAlert, setNullAlert] = useState(false);
+  const [addAlert, setAddAlert] = useState(false);
   const [isDisabled, setIsDisabled] = useState(false);
 
   const setAlert = props.setAlert;
@@ -49,7 +50,7 @@ const EditForm = (props) => {
   };
   async function putRequest() {
     try {
-      const res = await AxiosInstance.put(`${wDetails.wId}`, wholesalerDetail);
+      const res = await axiosInstance.put(`${wDetails.wId}`, wholesalerDetail);
       if (res.status === 200) {
         if (table === "filter") {
           setFilterDetails({ ...filterDetails });
@@ -62,6 +63,12 @@ const EditForm = (props) => {
       console.log(e);
       if (e.response.status === 400) {
         setNullAlert(true);
+      }
+      if (
+        e.response.data.statusCode === 302 &&
+        e.response.data.message === "This Phone Number Already exists"
+      ) {
+        setAddAlert(true);
       }
     }
   }
@@ -128,7 +135,11 @@ const EditForm = (props) => {
             name="PhoneNo"
             {...register("PhoneNo")}
             error={!!errors?.PhoneNo}
-            helperText={errors?.PhoneNo?.message}
+            helperText={
+              addAlert
+                ? "This Phone Number Already exists!"
+                : errors?.PhoneNo?.message
+            }
             defaultValue={phoneNo}
             onChange={(e) => setPhoneNo(e.target.value)}
           />
@@ -146,7 +157,7 @@ const EditForm = (props) => {
             labelId="role-select-label"
             id="role-select"
             value={role}
-            onChange={() => setRole(e.target.value)}
+            onChange={(e) => setRole(e.target.value)}
             sx={{ width: 225 }}
           >
             <MenuItem value={"SUPER_ADMIN"}>SUPER_ADMIN</MenuItem>

@@ -4,7 +4,6 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
 import Image from "next/image";
 import deleteicon from "../images/deleteicon.png";
 import editicon from "../images/editicon.png";
@@ -13,36 +12,55 @@ import { Button } from "@mui/material";
 import DialogModal from "./DialogModal";
 import EditForm from "./EditForm";
 import DeleteForm from "./DeleteForm";
-import { AxiosInstance } from "@/axios/ConfigAxios";
+import { axiosInstance } from "@/axios/ConfigAxios";
 
-
-
-const DisplayTable = (props) => {
+const MyTable = ({
+  setAlert,
+  setMessage,
+  filterDetails,
+  setFilterDetails,
+  openAddModal,
+  openFilterModal,
+  wholesalerDetails,
+  setWholesalerDetails,
+  table,
+  page,
+  setPages,
+}) => {
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [dId, setDId] = useState(undefined);
   const [wholesalerDetailForEdit, setWholesalerDetailForEdit] = useState(
     undefined
   );
-  const setAlert = props.setAlert;
-  const setMessage = props.setMessage;
 
-  const openAddModal = props.openAddModal;
-  const wholesalerDetails = props.wholesalerDetails;
-  const setWholesalerDetails = props.setWholesalerDetails;
-  const table = props.table;
-
-  async function getWholesalerDetails(page) {
-    AxiosInstance.get(
-      `WholeSellers?pageNo=${page - 1}&pageSize=5&sortBy=firstName`
-    )
+  async function filterWholesalerDetails(page) {
+    axiosInstance
+      .get(`filter?pageNo=${page - 1}&pageSize=5`, {
+        params: filterDetails,
+      })
       .then((response) => {
         // Handle response
-        // console.log(response.data.content);
+        console.log(response.data);
         setWholesalerDetails(response.data.content);
+        setPages(response.data.totalPages);
       })
       .catch((err) => {
         // Handle errors
+        console.error(err);
+      });
+  }
+  async function getWholesalerDetails(page) {
+    console.log(page);
+    console.log("hi");
+    axiosInstance
+      .get(`WholeSellers?pageNo=${page - 1}&pageSize=5&sortBy=firstName`)
+      .then((response) => {
+        console.log(response.data);
+        setWholesalerDetails(response.data.content);
+        setPages(response.data.totalPages);
+      })
+      .catch((err) => {
         console.error(err);
       });
   }
@@ -51,33 +69,24 @@ const DisplayTable = (props) => {
     let flag = true;
     if (flag) {
       if (
-        !openAddModal ||
-        !openEditModal ||
-        (!openDeleteModal && table === "get")
+        (!openFilterModal || !openEditModal || !openDeleteModal) &&
+        table === "filter"
       ) {
-        getWholesalerDetails(props.page);
+        filterWholesalerDetails(page);
+      }
+      if (
+        (!openAddModal || !openEditModal || !openDeleteModal) &&
+        table === "get"
+      ) {
+        console.log(table);
+        getWholesalerDetails(page);
       }
     }
     return () => {
       // cancel the subscription
       flag = false;
     };
-  }, [props.page, openAddModal, openEditModal, openDeleteModal]);
-
-  // useEffect(() => {
-  //   let flag = true;
-  //   if (flag) {
-  //     if (dId !== undefined && openDeleteModal === false) {
-  //       setOpenDeleteModal(true);
-  //     } else {
-  //       setOpenDeleteModal(false);
-  //     }
-  //   }
-  //   return () => {
-  //     // cancel the subscription
-  //     flag = false;
-  //   };
-  // }, [dId]);
+  }, [page, openFilterModal, openEditModal, openDeleteModal, openAddModal]);
 
   useEffect(() => {
     let flag = true;
@@ -128,7 +137,7 @@ const DisplayTable = (props) => {
           aria-label="simple table"
         >
           <TableHead>
-            <TableRow >
+            <TableRow>
               <TableCell style={{ borderBottom: "none" }} align="left">
                 First Name
               </TableCell>
@@ -152,49 +161,40 @@ const DisplayTable = (props) => {
           <TableBody>
             {Array.isArray(wholesalerDetails)
               ? wholesalerDetails.map((row) => (
-                    <TableRow
-                      key={row.wid}
-                      sx={{
-                        backgroundColor: "#F0EFFF",
-                        "& td": { border: 0 },
-                      }}
-                    >
-                      <TableCell
-                        // component="th"
-                        // scope="row"
-                        // style={{ borderBottom: "none" }}
+                  <TableRow
+                    key={row.wid}
+                    sx={{ backgroundColor: "#F0EFFF", "& td": { border: 0 } }}
+                  >
+                    <TableCell>{row.firstName}</TableCell>
+                    <TableCell align="left">{row.lastName}</TableCell>
+                    <TableCell align="left">{row.emailId}</TableCell>
+                    <TableCell align="left">{row.phoneNo}</TableCell>
+                    <TableCell align="left">{row.wholeSalerId}</TableCell>
+                    <TableCell align="center">
+                      <Button
+                        onClick={() =>
+                          handleEdit(
+                            row.firstName,
+                            row.lastName,
+                            row.emailId,
+                            row.phoneNo,
+                            row.wholeSalerId,
+                            row.role,
+                            row.locId
+                          )
+                        }
                       >
-                        {row.firstName}
-                      </TableCell>
-                      <TableCell align="left">{row.lastName}</TableCell>
-                      <TableCell align="left">{row.emailId}</TableCell>
-                      <TableCell align="left">{row.phoneNo}</TableCell>
-                      <TableCell align="left">{row.wholeSalerId}</TableCell>
-                      <TableCell align="center">
-                        <Button
-                          onClick={() =>
-                            handleEdit(
-                              row.firstName,
-                              row.lastName,
-                              row.emailId,
-                              row.phoneNo,
-                              row.wholeSalerId,
-                              row.role,
-                              row.locId
-                            )
-                          }
-                        >
-                          <Image src={editicon} />
-                        </Button>
-                        <Button
-                          onClick={() => {
-                            handleDelete(row.wholeSalerId);
-                          }}
-                        >
-                          <Image src={deleteicon} />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
+                        <Image src={editicon} />
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          handleDelete(row.wholeSalerId);
+                        }}
+                      >
+                        <Image src={deleteicon} />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
                 ))
               : null}
           </TableBody>
@@ -210,6 +210,9 @@ const DisplayTable = (props) => {
             setAlert={setAlert}
             setMessage={setMessage}
             setOpenEditModal={setOpenEditModal}
+            filterDetails={filterDetails}
+            setFilterDetails={setFilterDetails}
+            table={table}
           />
         }
         handleClose={handleCloseEditModal}
@@ -232,4 +235,4 @@ const DisplayTable = (props) => {
   );
 };
 
-export default DisplayTable;
+export default MyTable;
