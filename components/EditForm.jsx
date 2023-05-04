@@ -13,7 +13,16 @@ import { axiosInstance } from "@/axios/ConfigAxios";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { schema } from "../validations/Editval";
-const EditForm = (props) => {
+const EditForm = ({
+  setAlert,
+  setMessage,
+  setOpenEditModal,
+  filterDetails,
+  setFilterDetails,
+  table,
+  existingWholesalerDetail,
+  setExistingWholesalerDetail,
+}) => {
   const {
     formState: { errors },
     register,
@@ -21,36 +30,17 @@ const EditForm = (props) => {
     resolver: yupResolver(schema),
     mode: "onTouched",
   });
-  const wDetails = props.wDetail;
-  const [fname, setFname] = useState(wDetails.fname);
-  const [lname, setLname] = useState(wDetails.lname);
-  const [email, setEmail] = useState(wDetails.email);
-  const [phoneNo, setPhoneNo] = useState(wDetails.pno);
-  const [locId, setlocId] = useState(wDetails.locId);
-  const [role, setRole] = useState(wDetails.role);
+
   const [nullAlert, setNullAlert] = useState(false);
   const [addAlert, setAddAlert] = useState(false);
   const [isDisabled, setIsDisabled] = useState(false);
 
-  const setAlert = props.setAlert;
-  const setMessage = props.setMessage;
-  const setOpenEditModal = props.setOpenEditModal;
-  const filterDetails = props.filterDetails;
-  const setFilterDetails = props.setFilterDetails;
-  const table = props.table;
-
-  const wholesalerDetail = {
-    firstName: fname,
-    lastName: lname,
-    emailId: email,
-    phoneNo: phoneNo,
-    wholeSalerId: wDetails.wId,
-    role: role,
-    locId: locId,
-  };
   async function putRequest() {
     try {
-      const res = await axiosInstance.put(`${wDetails.wId}`, wholesalerDetail);
+      const res = await axiosInstance.put(
+        `${existingWholesalerDetail.wholeSalerId}`,
+        existingWholesalerDetail
+      );
       if (res.status === 200) {
         if (table === "filter") {
           setFilterDetails({ ...filterDetails });
@@ -61,7 +51,7 @@ const EditForm = (props) => {
       }
     } catch (e) {
       console.log(e);
-      if (e.response.status === 400) {
+      if (e.response.status === 409) {
         setNullAlert(true);
       }
       if (
@@ -81,6 +71,13 @@ const EditForm = (props) => {
     }, 1000);
   }
 
+  function handleChange(e) {
+    setExistingWholesalerDetail({
+      ...existingWholesalerDetail,
+      [e.target.name]: e.target.value,
+    });
+  }
+
   return (
     <form>
       <Typography
@@ -95,53 +92,53 @@ const EditForm = (props) => {
           <TextField
             variant="outlined"
             label="FirstName"
-            name="FirstName"
-            {...register("FirstName")}
-            error={!!errors?.FirstName}
-            helperText={errors?.FirstName?.message}
+            name="firstName"
+            {...register("firstName")}
+            error={!!errors?.firstName}
+            helperText={errors?.firstName?.message}
             sx={{ Padding: 5 }}
-            defaultValue={fname}
-            onChange={(e) => setFname(e.target.value)}
+            value={existingWholesalerDetail.firstName}
+            onChange={(e) => handleChange(e)}
           />
         </Grid>
         <Grid item xs={4} sx={{ marginBottom: 3 }}>
           <TextField
             variant="outlined"
             label="LastName"
-            name="LastName"
-            {...register("LastName")}
-            error={!!errors?.LastName}
-            helperText={errors?.LastName?.message}
-            defaultValue={lname}
-            onChange={(e) => setLname(e.target.value)}
+            name="lastName"
+            {...register("lastName")}
+            error={!!errors?.lastName}
+            helperText={errors?.lastName?.message}
+            value={existingWholesalerDetail.lastName}
+            onChange={(e) => handleChange(e)}
           />
         </Grid>
         <Grid item xs={4} sx={{ marginBottom: 3 }}>
           <TextField
             variant="outlined"
             label="Email ID"
-            name="EmailId"
-            {...register("EmailId")}
-            error={!!errors?.EmailId}
-            helperText={errors?.EmailId?.message}
-            defaultValue={email}
-            onChange={(e) => setEmail(e.target.value)}
+            name="emailId"
+            {...register("emailId")}
+            error={!!errors?.emailId}
+            helperText={errors?.emailId?.message}
+            value={existingWholesalerDetail.emailId}
+            onChange={(e) => handleChange(e)}
           />
         </Grid>
         <Grid item xs={4} sx={{ marginBottom: 3 }}>
           <TextField
             variant="outlined"
             label="Phone Number"
-            name="PhoneNo"
-            {...register("PhoneNo")}
-            error={!!errors?.PhoneNo}
+            name="phoneNo"
+            {...register("phoneNo")}
+            error={!!errors?.phoneNo}
             helperText={
               addAlert
                 ? "This Phone Number Already exists!"
-                : errors?.PhoneNo?.message
+                : errors?.phoneNo?.message
             }
-            defaultValue={phoneNo}
-            onChange={(e) => setPhoneNo(e.target.value)}
+            value={existingWholesalerDetail.phoneNo}
+            onChange={(e) => handleChange(e)}
           />
         </Grid>
         <Grid item xs={4} sx={{ marginBottom: 3 }}>
@@ -149,15 +146,16 @@ const EditForm = (props) => {
             variant="outlined"
             label="Wholesaler Id"
             disabled={true}
-            defaultValue={wDetails.wId}
+            defaultValue={existingWholesalerDetail.wholeSalerId}
           />
         </Grid>
         <Grid item xs={4} sx={{ marginBottom: 3 }}>
           <Select
             labelId="role-select-label"
             id="role-select"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
+            name="role"
+            value={existingWholesalerDetail.role}
+            onChange={(e) => handleChange(e)}
             sx={{ width: 225 }}
           >
             <MenuItem value={"SUPER_ADMIN"}>SUPER_ADMIN</MenuItem>
@@ -170,12 +168,12 @@ const EditForm = (props) => {
           <TextField
             variant="outlined"
             label="LOC id"
-            name="LOCId"
-            {...register("LOCId")}
-            error={!!errors?.LOCId}
-            helperText={errors?.LOCId?.message}
-            defaultValue={locId}
-            onChange={(e) => setlocId(e.target.value)}
+            name="locId"
+            {...register("locId")}
+            error={!!errors?.locId}
+            helperText={errors?.locId?.message}
+            value={existingWholesalerDetail.locId}
+            onChange={(e) => handleChange(e)}
           />
         </Grid>
         {nullAlert && (

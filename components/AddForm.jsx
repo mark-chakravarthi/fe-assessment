@@ -14,7 +14,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { schema } from "../validations/Addval";
 
-const AddForm = (props) => {
+const AddForm = ({ setAlert, setMessage, setOpenModal }) => {
   const {
     formState: { errors },
     register,
@@ -22,32 +22,24 @@ const AddForm = (props) => {
     resolver: yupResolver(schema),
     mode: "onTouched",
   });
-  const [fname, setFname] = useState("");
-  const [lname, setLname] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneNo, setPhoneNo] = useState("");
-  const [role, setRole] = useState("SUPER_ADMIN");
-  const [wId, setWid] = useState("");
-  const [locId, setlocId] = useState("");
+
+  const [newWholesaler, setNewWholesaler] = useState({
+    firstName: "",
+    lastName: "",
+    emailId: "",
+    phoneNo: "",
+    wholeSalerId: "",
+    role: "SUPER_ADMIN",
+    locId: "",
+  });
   const [addAlert, setAddAlert] = useState(false);
   const [nullAlert, setNullAlert] = useState(false);
   const [isDisabled, setIsDisabled] = useState(false);
 
-  const setAlert = props.setAlert;
-  const setMessage = props.setMessage;
-  const wholesalerDetail = {
-    firstName: fname,
-    lastName: lname,
-    emailId: email,
-    phoneNo: phoneNo,
-    wholeSalerId: wId,
-    role: role,
-    locId: locId,
-  };
-  const setOpenModal = props.setOpenModal;
   async function postDetails() {
+    console.log(newWholesaler);
     try {
-      const res = await axiosInstance.post("WholeSellers", wholesalerDetail);
+      const res = await axiosInstance.post("WholeSellers", newWholesaler);
       setOpenModal(false);
       if (res.status == 200) {
         setAlert(true);
@@ -67,7 +59,7 @@ const AddForm = (props) => {
       ) {
         setAddAlert(true);
       }
-      if (e.response.status === 400) {
+      if (e.response.status === 409) {
         setNullAlert(true);
       }
     }
@@ -80,6 +72,13 @@ const AddForm = (props) => {
       setIsDisabled(false);
     }, 1000);
   }
+  function handleChange(e) {
+    setNewWholesaler({
+      ...newWholesaler,
+      [e.target.name]: e.target.value,
+    });
+  }
+
   return (
     <form>
       <Typography
@@ -94,73 +93,73 @@ const AddForm = (props) => {
           <TextField
             variant="outlined"
             label="FirstName"
-            name="FirstName"
-            {...register("FirstName")}
-            error={!!errors?.FirstName}
-            helperText={errors?.FirstName?.message}
+            name="lirstName"
+            {...register("firstName")}
+            error={!!errors?.lirstName}
+            helperText={errors?.lirstName?.message}
             sx={{ Padding: 5 }}
-            onChange={(e) => setFname(e.target.value)}
+            onChange={(e) => handleChange(e)}
           />
         </Grid>
         <Grid item xs={4} sx={{ marginBottom: 3 }}>
           <TextField
             variant="outlined"
             label="LastName"
-            name="LastName"
-            {...register("LastName")}
-            error={!!errors?.LastName}
-            helperText={errors?.LastName?.message}
-            onChange={(e) => setLname(e.target.value)}
+            name="lastName"
+            {...register("lastName")}
+            error={!!errors?.lastName}
+            helperText={errors?.lastName?.message}
+            onChange={(e) => handleChange(e)}
           />
         </Grid>
         <Grid item xs={4} sx={{ marginBottom: 3 }}>
           <TextField
             variant="outlined"
             label="Email ID"
-            name="EmailId"
-            {...register("EmailId")}
-            error={!!errors?.EmailId}
-            helperText={errors?.EmailId?.message}
-            onChange={(e) => setEmail(e.target.value)}
+            name="emailId"
+            {...register("emailId")}
+            error={!!errors?.emailId}
+            helperText={errors?.emailId?.message}
+            onChange={(e) => handleChange(e)}
           />
         </Grid>
         <Grid item xs={4} sx={{ marginBottom: 3 }}>
           <TextField
             variant="outlined"
             label="Phone Number"
-            name="PhoneNo"
-            {...register("PhoneNo")}
-            error={!!errors?.PhoneNo}
+            name="phoneNo"
+            {...register("phoneNo")}
+            error={!!errors?.phoneNo}
             helperText={
               addAlert
                 ? "This Phone Number Already exists!"
-                : errors?.PhoneNo?.message
+                : errors?.phoneNo?.message
             }
-            onChange={(e) => setPhoneNo(e.target.value)}
+            onChange={(e) => handleChange(e)}
           />
         </Grid>
         <Grid item xs={4} sx={{ marginBottom: 3 }}>
           <TextField
             variant="outlined"
             label="Wholesaler Id"
-            name="WholesalerId"
-            {...register("WholesalerId")}
-            error={!!errors?.WholesalerId}
+            name="wholeSalerId"
+            {...register("wholeSalerId")}
+            error={!!errors?.wholeSalerId}
             helperText={
               addAlert
                 ? "This WholeSalerId Already Exists!"
-                : errors?.WholesalerId?.message
+                : errors?.wholeSalerId?.message
             }
-            onChange={(e) => setWid(e.target.value)}
+            onChange={(e) => handleChange(e)}
           />
         </Grid>
         <Grid item xs={4} sx={{ marginBottom: 3 }}>
           <Select
             labelId="role-select-label"
             id="role-select"
-            value={role}
-            name="Role"
-            onChange={(e) => setRole(e.target.value)}
+            value={newWholesaler.role}
+            name="role"
+            onChange={(e) => handleChange(e)}
             sx={{ width: 225 }}
           >
             <MenuItem value={"SUPER_ADMIN"}>SUPER_ADMIN</MenuItem>
@@ -173,11 +172,11 @@ const AddForm = (props) => {
           <TextField
             variant="outlined"
             label="LOC Id"
-            name="LOCId"
-            {...register("LOCId")}
-            error={!!errors?.LOCId}
-            helperText={errors?.LOCId?.message}
-            onChange={(e) => setlocId(e.target.value)}
+            name="locId"
+            {...register("locId")}
+            error={!!errors?.locId}
+            helperText={errors?.locId?.message}
+            onChange={(e) => handleChange(e)}
           />
         </Grid>
 

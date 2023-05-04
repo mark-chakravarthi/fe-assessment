@@ -33,7 +33,7 @@ const Wholesaler = () => {
     phoneNo: "",
     wholeSalerId: "",
   });
-  const [pages, setPages] = useState(null);
+  const [pages, setPages] = useState(0);
 
   function handleCloseAddModal() {
     setOpenAddModal(false);

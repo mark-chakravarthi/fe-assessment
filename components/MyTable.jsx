@@ -33,7 +33,6 @@ const MyTable = ({
   const [wholesalerDetailForEdit, setWholesalerDetailForEdit] = useState(
     undefined
   );
-
   async function filterWholesalerDetails(page) {
     axiosInstance
       .get(`filter?pageNo=${page - 1}&pageSize=5`, {
@@ -41,7 +40,6 @@ const MyTable = ({
       })
       .then((response) => {
         // Handle response
-        console.log(response.data);
         setWholesalerDetails(response.data.content);
         setPages(response.data.totalPages);
       })
@@ -51,8 +49,6 @@ const MyTable = ({
       });
   }
   async function getWholesalerDetails(page) {
-    console.log(page);
-    console.log("hi");
     axiosInstance
       .get(`WholeSellers?pageNo=${page - 1}&pageSize=5&sortBy=firstName`)
       .then((response) => {
@@ -78,7 +74,6 @@ const MyTable = ({
         (!openAddModal || !openEditModal || !openDeleteModal) &&
         table === "get"
       ) {
-        console.log(table);
         getWholesalerDetails(page);
       }
     }
@@ -87,21 +82,6 @@ const MyTable = ({
       flag = false;
     };
   }, [page, openFilterModal, openEditModal, openDeleteModal, openAddModal]);
-
-  useEffect(() => {
-    let flag = true;
-    if (flag) {
-      if (wholesalerDetailForEdit !== undefined && openEditModal === false) {
-        setOpenEditModal(true);
-      } else {
-        setOpenEditModal(false);
-      }
-    }
-    return () => {
-      // cancel the subscription
-      flag = false;
-    };
-  }, [wholesalerDetailForEdit]);
 
   function handleCloseEditModal() {
     setOpenEditModal(false);
@@ -113,17 +93,9 @@ const MyTable = ({
     setOpenDeleteModal(true);
     setDId(wid);
   }
-  function handleEdit(fname, lname, email, pno, wId, role, locId) {
-    const existingDetails = {
-      fname: fname,
-      lname: lname,
-      email: email,
-      pno: pno,
-      wId: wId,
-      role: role,
-      locId: locId,
-    };
-    setWholesalerDetailForEdit(existingDetails);
+  function handleEdit(existingWholesalerDetails) {
+    setOpenEditModal(true);
+    setWholesalerDetailForEdit(existingWholesalerDetails);
   }
   return (
     <>
@@ -171,19 +143,7 @@ const MyTable = ({
                     <TableCell align="left">{row.phoneNo}</TableCell>
                     <TableCell align="left">{row.wholeSalerId}</TableCell>
                     <TableCell align="center">
-                      <Button
-                        onClick={() =>
-                          handleEdit(
-                            row.firstName,
-                            row.lastName,
-                            row.emailId,
-                            row.phoneNo,
-                            row.wholeSalerId,
-                            row.role,
-                            row.locId
-                          )
-                        }
-                      >
+                      <Button onClick={() => handleEdit(row)}>
                         <Image src={editicon} />
                       </Button>
                       <Button
@@ -204,9 +164,8 @@ const MyTable = ({
         open={openEditModal}
         children={
           <EditForm
-            wDetail={wholesalerDetailForEdit}
-            wholesalerDetails={wholesalerDetails}
-            setWholesalerDetails={setWholesalerDetails}
+            existingWholesalerDetail={wholesalerDetailForEdit}
+            setExistingWholesalerDetail={setWholesalerDetailForEdit}
             setAlert={setAlert}
             setMessage={setMessage}
             setOpenEditModal={setOpenEditModal}

@@ -7,21 +7,19 @@ import {
 } from "@mui/material";
 import { axiosInstance } from "@/axios/ConfigAxios";
 
-const DeleteForm = (props) => {
-  const setOpenDeleteModal = props.setOpenDeleteModal;
-  const setAlert = props.setAlert;
-  const setMessage = props.setMessage;
+const DeleteForm = ({setOpenDeleteModal,setAlert,setMessage,wid}) => {
+
 
   async function DeleteRequest() {
-    const res = await axiosInstance.delete(`${props.wid}`);
+    const res = await axiosInstance.delete(`${wid}`);
     if (res.data.status === "ACCEPTED") {
       setAlert(true);
       setMessage(res.data.message);
     }
   }
   function handleSubmit() {
-    setOpenDeleteModal(false);
     DeleteRequest();
+    setOpenDeleteModal(false);
   }
   function handleClose() {
     setOpenDeleteModal(false);

@@ -1,27 +1,29 @@
 import * as Yup from "yup";
 
 export const schema = Yup.object().shape({
-  FirstName: Yup.string()
+  firstName: Yup.string()
     .required()
     .matches(/^[A-Za-z]+$/, "Only alphabets allowed")
     .label("FirstName"),
-  LastName: Yup.string()
+  lastName: Yup.string()
     .required()
     .matches(/^[A-Za-z]+$/, "Only alphabets allowed")
     .label("LastName"),
-  EmailId: Yup.string()
+  emailId: Yup.string()
     .required()
-    .matches(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, "Enter a valid Email Id")
+    .matches(
+      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+      "Enter a valid Email Id"
+    )
     .label("EmailId"),
-  PhoneNo: Yup.string()
+  phoneNo: Yup.string()
     .required()
-    .min(10,'Enter a 10 digit mobile number')
-    .max(10,'Enter a 10 digit mobile number')
-    .matches(/^[0-9]{10}$/,'Enter a 10 digit mobile number')
+    .min(10, "Enter a 10 digit mobile number")
+    .max(10, "Enter a 10 digit mobile number")
+    .matches(/^[0-9]{10}$/, "Enter a 10 digit mobile number")
     .label("PhoneNumber"),
-
-  LOCId: Yup.string()
+  locId: Yup.string()
     .required()
-    .matches(/^[A-Z]{2}[0-9]{6}$/,'LOC Id should be of type AB123456')
+    .matches(/^[A-Z]{2}[0-9]{6}$/, "LOC Id should be of type AB123456")
     .label("LOCId"),
 });

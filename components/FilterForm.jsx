@@ -39,7 +39,6 @@ const FilterForm = ({
   }
 
   function handleChange(e) {
-    console.log(e.target.name);
     setFilterDetails({ ...filterDetails, [e.target.name]: e.target.value });
   }
 
